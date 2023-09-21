@@ -1,0 +1,24 @@
+﻿<Application x:Class="ApplicationHub.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MVVM/View/MainWindow_View.xaml">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!--Themes-->
+            <ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="mainBackgroundColor" Color="#07779C" />
+            <SolidColorBrush x:Key="titleBarBackgroundColor" Color="#06455B" />
+
+            <SolidColorBrush x:Key="controlBackgroundColor" Color="#376A7B" />
+            <SolidColorBrush x:Key="controlFocusedBackgroundColor" Color="#0A88B2" />
+            <SolidColorBrush x:Key="controlDisabledBackgroundColor" Color="LightGray" />
+            <SolidColorBrush x:Key="controlForegroundColor" Color="White" />
+
+            <SolidColorBrush x:Key="SemiBlackForegroundColor" Color="#303030" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

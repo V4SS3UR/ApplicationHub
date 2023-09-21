@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="ApplicationHub.TileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ApplicationHub.Properties"
+             xmlns:cc="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="100"
+             UseLayoutRounding="True" SnapsToDevicePixels="True"
+             RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.ClearTypeHint="Enabled"
+             Background="Transparent">
+
+    <Border Name="tileBorder" Background="Transparent" Padding="5" Margin="1">
+
+        <Grid RenderTransformOrigin="0.5,0.5" Background="Transparent">
+
+            <Grid.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                </TransformGroup>
+            </Grid.RenderTransform>
+
+            <cc:FadeButton Background="#5FFF" FocusedBackground="#7FFF"
+                           CornerRadius="5"
+                           Command="{Binding Command}"
+                           Width="100" Height="90" Cursor="Hand">
+
+                <Grid Margin="5">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+
+                    <Image Source="{Binding Icon}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+
+                    <TextBlock Grid.Row="1" Text="{Binding Name}" FontSize="10"
+                               FontWeight="Medium" Foreground="{StaticResource SemiBlackForegroundColor}"
+                               TextWrapping="Wrap" TextAlignment="Center" />
+                </Grid>
+            </cc:FadeButton>
+
+            <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent" />
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,27 @@
+﻿
+[PLM - Teamcenter]
+S:\Controle\Anthony VASSEUR\PLM VIEWER\Go Live
+S:\Controle\Anthony VASSEUR\MACRO\PLM\Classification Manager PLM
+S:\Controle\Anthony VASSEUR\MACRO\PLM\CreateAR
+S:\Controle\Anthony VASSEUR\MACRO\PLM\PLM Properties Injection
+S:\Controle\Anthony VASSEUR\MACRO\PLM\PolyConfigurator 3D
+S:\Controle\Anthony VASSEUR\MACRO\PLM\PDF CONCATENATOR\PLM Concatenator V2\V2.4
+S:\Controle\Anthony VASSEUR\MACRO\PLM\Multicoy PLM\QUIETCO2OL - évolution 2 - GA
+S:\Controle\Anthony VASSEUR\MACRO\PLM\PLMLogin
+
+[Outils]
+S:\Controle\Anthony VASSEUR\MACRO\OUTILS\HCL_Label\HCL_Label V1
+S:\Controle\Anthony VASSEUR\MACRO\OUTILS\SST Inox
+S:\Controle\Anthony VASSEUR\MACRO\OUTILS\T2C\T2C-PLM
+S:\Controle\Anthony VASSEUR\MACRO\SpyForSolidEdge.exe
+S:\Exploit\Outils\Macros\ViewerPROD\VIEWERPROD_Launcher.exe
+
+[NumAlliance]
+S:\Tubes\3D tubes\NumaStep\utilitaires
+
+[S:\Exploit]
+S:\Exploit\Outils\Macros\MULTICO2Y
+S:\Exploit\Outils\Macros\T2C
+S:\Exploit\Outils\Macros\T2C-PLM
+S:\Exploit\Outils\Macros\TubeVG 32-64b
+S:\Exploit\Outils\Macros\TubeVG_PLM
