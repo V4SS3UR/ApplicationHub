@@ -68,7 +68,7 @@
     </ApplicationDefinition>
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="MVVM\Model\AppCategory.cs" />
-    <Compile Include="TileControl.xaml.cs">
+    <Compile Include="MVVM\View\TileControl.xaml.cs">
       <DependentUpon>TileControl.xaml</DependentUpon>
     </Compile>
     <Page Include="MVVM\View\MainWindow_View.xaml">
@@ -88,7 +88,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TileControl.xaml">
+    <Page Include="MVVM\View\TileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

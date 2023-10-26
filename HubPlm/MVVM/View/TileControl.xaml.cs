@@ -1,9 +1,13 @@
-﻿using System;
+﻿using ApplicationHub.Properties;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace ApplicationHub
 {
@@ -19,9 +23,9 @@ namespace ApplicationHub
             InitializeComponent();
 
             // Attach event handlers
-            MouseEnter += TileControl_MouseEnter;
-            MouseLeave += TileControl_MouseLeave;
-            MouseMove += TileControl_MouseMove;
+            this.MouseEnter += TileControl_MouseEnter;
+            this.MouseLeave += TileControl_MouseLeave;
+            this.MouseMove += TileControl_MouseMove;
         }
 
         private void TileControl_MouseMove(object sender, MouseEventArgs e)

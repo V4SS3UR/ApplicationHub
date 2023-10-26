@@ -28,8 +28,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Border Background="White" Height="40" BorderBrush="Black" Margin="5" CornerRadius="10">
-                    <Grid Margin="30,10,30,10">
+                <Border Background="White" Height="30" BorderBrush="Black" Margin="5" CornerRadius="10">
+                    <Grid Margin="15,5">
                         <TextBlock Height="auto" Text="Rechercher" Margin="1,0"
                                    FontSize="15" FontWeight="Thin" Foreground="Gray">
                             <TextBlock.Style>
@@ -52,14 +52,23 @@
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
 
-                    <ItemsControl ItemsSource="{Binding ApplicationCategoryList}" Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding ApplicationCategoryListView}" Grid.Row="1">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
 
                                 <StackPanel>
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding AppModelListView.IsEmpty}" Value="true">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
                                     <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
                                                HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                    <ItemsControl ItemsSource="{Binding AppModelList}" Grid.Row="1">
+                                    <ItemsControl ItemsSource="{Binding AppModelListView}" Grid.Row="1">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <c:TileControl HorizontalAlignment="Center" VerticalAlignment="Center" />

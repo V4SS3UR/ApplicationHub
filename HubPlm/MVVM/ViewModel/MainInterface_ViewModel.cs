@@ -6,21 +6,17 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Data;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
     public class MainInterface_ViewModel : INotifyPropertyChanged
     {
-        private AppModel[] originalApplicationList { get; set; }
+        private List<AppModel> originalApplicationList { get; set; }
 
-        private ObservableCollection<AppCategory> _applicationCategoryList; public ObservableCollection<AppCategory> ApplicationCategoryList
-        {
-            get { return _applicationCategoryList; }
-            set { _applicationCategoryList = value; OnPropertyChanged(); }
-        }
+        public ICollectionView ApplicationCategoryListView { get; set; }
+        public ObservableCollection<AppCategory> ApplicationCategoryList { get; set; }
+
 
         private string _searchString; public string SearchString
         {
@@ -28,12 +24,12 @@ namespace ApplicationHub.MVVM.ViewModel
             set
             {
                 _searchString = value;
-
-                AppModel[] filteredAppList = !string.IsNullOrEmpty(value) ? originalApplicationList.Where(o => o.Name.ToLower().Contains(value.ToLower())).ToArray() : originalApplicationList;
-                List<IGrouping<string, AppModel>> appGroup = filteredAppList.GroupBy(o => o.Category).ToList();
-
-                AppCategory[] newAppCategory = appGroup.Select(o => new AppCategory(o.Key, o.ToArray())).ToArray();
-                ApplicationCategoryList = new ObservableCollection<AppCategory>(newAppCategory);
+                
+                foreach (var item in ApplicationCategoryList)
+                {
+                    item.AppModelListView?.Refresh();
+                }
+                this.ApplicationCategoryListView.Refresh();
 
                 OnPropertyChanged();
             }
@@ -41,10 +37,41 @@ namespace ApplicationHub.MVVM.ViewModel
 
         public MainInterface_ViewModel()
         {
-            originalApplicationList = Constants.GetPaths().Select(o => new AppModel(o)).ToArray();
+            this.originalApplicationList = new List<AppModel>();
+            this.ApplicationCategoryList = new ObservableCollection<AppCategory>();
+            this.ApplicationCategoryListView = new CollectionViewSource { Source = this.ApplicationCategoryList }.View;
 
-            SearchString = string.Empty;
+            Constants.ApplicationPathList.CollectionChanged += ApplicationPathList_CollectionChanged;
+
+            this.SearchString = string.Empty;
         }
+
+        private void ApplicationPathList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            foreach (string[] item in e.NewItems)
+            {
+                AppModel appModel = new AppModel(item);
+                this.originalApplicationList.Add(appModel);
+
+                AppCategory category = this.ApplicationCategoryList.FirstOrDefault(o => o.Name == appModel.Category);
+
+                if (category == null)
+                {
+                    category = new AppCategory(appModel.Category);
+                    this.ApplicationCategoryList.Add(category);
+
+                    category.AppModelListView.Filter += o =>
+                    {
+                        AppModel app = o as AppModel;
+                        return string.IsNullOrEmpty(SearchString) || app.Name.ToLower().Contains(SearchString.ToLower());
+                    };
+                }
+
+                category.AddApp(appModel);
+            }
+        }
+
+
 
         //Notify
         public event PropertyChangedEventHandler PropertyChanged;
