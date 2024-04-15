@@ -21,15 +21,6 @@ namespace ApplicationHub
         public TileControl()
         {
             InitializeComponent();
-
-            // Attach event handlers
-            this.MouseEnter += TileControl_MouseEnter;
-            this.MouseLeave += TileControl_MouseLeave;
-            this.MouseMove += TileControl_MouseMove;
-        }
-
-        private void TileControl_MouseMove(object sender, MouseEventArgs e)
-        {
         }
 
         private void TileControl_MouseEnter(object sender, MouseEventArgs e)

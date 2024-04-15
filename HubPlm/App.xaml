@@ -1,6 +1,7 @@
 ﻿<Application x:Class="ApplicationHub.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
              StartupUri="MVVM/View/MainWindow_View.xaml">
 
     <Application.Resources>
@@ -19,6 +20,13 @@
             <SolidColorBrush x:Key="controlForegroundColor" Color="White" />
 
             <SolidColorBrush x:Key="SemiBlackForegroundColor" Color="#303030" />
+
+            <Style TargetType="fade:FastShadow">
+                <Setter Property="BlurRadius" Value="8"/>
+                <Setter Property="ShadowDepth" Value="0"/>
+                <Setter Property="Color" Value="#3000"/>
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

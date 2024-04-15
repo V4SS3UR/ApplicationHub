@@ -138,5 +138,8 @@
     <Resource Include="Ressources\Images\hub-reseau.ico" />
     <Resource Include="Ressources\Images\hub-reseau.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Libs\VsrFade.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
