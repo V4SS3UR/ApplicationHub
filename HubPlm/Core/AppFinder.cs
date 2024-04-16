@@ -7,13 +7,13 @@ using System.Windows.Data;
 
 namespace ApplicationHub.Properties
 {
-    public class Constants
+    public class AppFinder
     {
         public static ObservableCollection<string[]> ApplicationPathList;
         private static readonly object _lock = new object();
 
 
-        static Constants()
+        static AppFinder()
         {
             ApplicationPathList = new ObservableCollection<string[]>();
             BindingOperations.EnableCollectionSynchronization(ApplicationPathList, _lock);

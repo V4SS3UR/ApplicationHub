@@ -1,0 +1,265 @@
+﻿<UserControl x:Class="ApplicationHub.MVVM.View.DetailedList_View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ApplicationHub.MVVM.View"
+             xmlns:vm="clr-namespace:ApplicationHub.MVVM.ViewModel"
+             xmlns:c="clr-namespace:ApplicationHub"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="590">
+
+    <UserControl.DataContext>
+        <vm:MainInterface_ViewModel />
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <Style TargetType="fade:FadeRadioButton">
+            <Setter Property="Background" Value="#1FFF" />
+            <Setter Property="FocusedBackground" Value="#6FFF" />
+            <Setter Property="DisabledBackgroundColor" Value="LightGray" />
+            <Setter Property="TimeFadeMilliseconds" Value="300" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Height" Value="50" />
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Background="#06455B">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border>
+            <ListBox Background="Transparent" BorderThickness="0"
+                     ItemsSource="{Binding ApplicationCategoryListView}" 
+                     SelectedItem="{Binding SelectedApplicationCategory}">
+
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <fade:FadeRadioButton Cursor="Hand" HorizontalContentAlignment="Left" GroupName="CategoryName"
+                                              IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem, Mode=FindAncestor}, Path=IsSelected}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Medium" Margin="5,0"/>
+                                <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Opacity="0.5" VerticalAlignment="Center" FontWeight="Medium" Margin="5,0"/>
+                            </StackPanel>
+                        </fade:FadeRadioButton>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Border Background="#FF07637F" Grid.Column="1" >
+
+            <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <Border Background="White" Height="30" Margin="0" CornerRadius="0" 
+                        BorderThickness="0,0,0,2" BorderBrush="#3000">
+                    
+                    <Grid Margin="15,5,5,5">
+                        <TextBlock Height="auto" Text="Rechercher" Margin="1,0" FontSize="15" FontWeight="Thin" Foreground="Gray">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SearchString}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBox x:Name="UserNametextBox" Height="auto" VerticalContentAlignment="Center"
+                                 Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
+                                 Background="Transparent" BorderThickness="0" />
+
+                        <fade:FadeButton Background="LightGray" Height="18" Width="18" CornerRadius="9" HorizontalAlignment="Right"
+                                         Command="{Binding ClearSearchCommand}">
+                            <Path Data="{StaticResource CrossCircle}" Fill="#8FFF" Stretch="Uniform" Margin="1"/>
+                        </fade:FadeButton>
+                    </Grid>
+                </Border>
+
+                <ListBox Grid.Row="1" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         ItemsSource="{Binding SelectedApplicationCategory.AppModelListView}" 
+                         SelectedItem="{Binding SelectedApplicationCategory.SelectedAppModel}">
+                    
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="IsSelected" Value="{Binding Content.IsSelected, Mode=TwoWay, RelativeSource={RelativeSource Self}}"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <ContentPresenter/>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <fade:FadeRadioButton Cursor="Hand" HorizontalContentAlignment="Left" GroupName="AppName"
+                                                  IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem, Mode=FindAncestor}, Path=IsSelected}">
+
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding Icon, Mode=TwoWay}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+
+                                    <TextBlock Grid.Row="1" 
+                                                   Text="{Binding Name}" FontSize="10" FontWeight="Medium" Foreground="White"
+                                                   TextWrapping="Wrap" TextAlignment="Center" 
+                                                   VerticalAlignment="Center" />
+                                </StackPanel>
+                            </fade:FadeRadioButton>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Grid>
+        </Border>
+
+        <Border Background="#07779C" Grid.Column="2">
+
+            <Border.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="13" />
+                </Style>
+                <Style TargetType="TextBox">
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontSize" Value="13" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Style>
+            </Border.Resources>
+
+            <DockPanel>
+                <DockPanel.Style>
+                    <Style TargetType="DockPanel">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DockPanel.Style>
+
+                <Border DockPanel.Dock="Top" CornerRadius="5" Background="#5FFF" Margin="5">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Image}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
+                    <Image Source="{Binding SelectedApplicationCategory.SelectedAppModel.Image, Mode=TwoWay}" 
+                       Height="auto" MaxHeight="300" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+                </Border>
+
+                <Border DockPanel.Dock="Top" CornerRadius="5" Background="#5FFF" Margin="5">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Image}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <Image Source="{Binding SelectedApplicationCategory.SelectedAppModel.Icon, Mode=TwoWay}" 
+                       Height="35" RenderOptions.BitmapScalingMode="HighQuality" Margin="5"/>
+                </Border>
+
+
+                <Grid DockPanel.Dock="Bottom" Margin="5">
+                    <fade:FadeButton  Background="#FF5BA4BD" Cursor="Hand" CornerRadius="5" Height="50"
+                                 Command="{Binding SelectedApplicationCategory.SelectedAppModel.OnClickCommand}">
+                        <TextBlock Text="Lancer" Foreground="Black" FontWeight="Bold" FontSize="20" Opacity="0.7"/>
+                    </fade:FadeButton>
+                    
+                    <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent" 
+                            IsHitTestVisible="False"/>
+                </Grid>
+                
+                <DockPanel DockPanel.Dock="Top" Margin="2">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Name}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+                    
+                    <TextBlock Text="Nom :" FontWeight="Medium" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding SelectedApplicationCategory.SelectedAppModel.Name}" TextWrapping="Wrap" Margin="5,0"/>
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Top" Margin="2">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Path}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+                    
+                    <TextBlock Text="Emplacement :" FontWeight="Medium" TextDecorations="Underline"/>
+                    <TextBox Text="{Binding SelectedApplicationCategory.SelectedAppModel.FolderPath, Mode=OneWay}" TextWrapping="Wrap" Margin="5,0" IsReadOnly="True"/>
+                </DockPanel>
+
+                <DockPanel DockPanel.Dock="Top" Margin="2">
+                    <DockPanel.Style>
+                        <Style TargetType="DockPanel">
+                            <Setter Property="Visibility" Value="Visible"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Description}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DockPanel.Style>
+                    
+                    <TextBlock DockPanel.Dock="Top" Text="Description :" FontWeight="Medium" TextDecorations="Underline"/>
+                    <TextBlock Text="{Binding SelectedApplicationCategory.SelectedAppModel.Description}" TextWrapping="Wrap" Margin="5,0"/>
+                </DockPanel>
+
+
+            </DockPanel>            
+            
+        </Border>
+    </Grid>
+</UserControl>

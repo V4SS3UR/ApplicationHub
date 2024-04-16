@@ -5,9 +5,9 @@ namespace ApplicationHub.MVVM.View
     /// <summary>
     /// Logique d'interaction pour MainInterface.xaml
     /// </summary>
-    public partial class MainInterface_View : UserControl
+    public partial class SimplifiedListe_View : UserControl
     {
-        public MainInterface_View()
+        public SimplifiedListe_View()
         {
             InitializeComponent();
         }

@@ -9,6 +9,7 @@
 
             <!--Themes-->
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Ressources/Geometry.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="mainBackgroundColor" Color="#07779C" />

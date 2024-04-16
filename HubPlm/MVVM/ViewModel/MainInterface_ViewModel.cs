@@ -1,4 +1,5 @@
-﻿using ApplicationHub.MVVM.Model;
+﻿using ApplicationHub.Core;
+using ApplicationHub.MVVM.Model;
 using ApplicationHub.Properties;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,20 @@ using System.Windows.Data;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
-    public class MainInterface_ViewModel : INotifyPropertyChanged
+    public class MainInterface_ViewModel : ObservableObject
     {
         private List<AppModel> originalApplicationList { get; set; }
 
         public ICollectionView ApplicationCategoryListView { get; set; }
         public ObservableCollection<AppCategory> ApplicationCategoryList { get; set; }
+        private AppCategory _selectedApplicationCategory; public AppCategory SelectedApplicationCategory
+        {
+            get { return _selectedApplicationCategory; }
+            set { 
+                _selectedApplicationCategory = value; 
+                OnPropertyChanged(); 
+            }
+        }
 
 
         private string _searchString; public string SearchString
@@ -35,16 +44,25 @@ namespace ApplicationHub.MVVM.ViewModel
             }
         }
 
+        public RelayCommand ClearSearchCommand { get; set; }
+
+
         public MainInterface_ViewModel()
         {
             this.originalApplicationList = new List<AppModel>();
             this.ApplicationCategoryList = new ObservableCollection<AppCategory>();
             this.ApplicationCategoryListView = new CollectionViewSource { Source = this.ApplicationCategoryList }.View;
 
-            Constants.ApplicationPathList.CollectionChanged += ApplicationPathList_CollectionChanged;
+            AppFinder.ApplicationPathList.CollectionChanged += ApplicationPathList_CollectionChanged;
 
             this.SearchString = string.Empty;
+
+            this.ApplicationCategoryListView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+
+            this.ClearSearchCommand = new RelayCommand(o => this.SearchString = string.Empty);
         }
+
+
 
         private void ApplicationPathList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
@@ -69,16 +87,11 @@ namespace ApplicationHub.MVVM.ViewModel
 
                 category.AddApp(appModel);
             }
-        }
 
-
-
-        //Notify
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if(this.SelectedApplicationCategory == null)
+            {
+                this.SelectedApplicationCategory = this.ApplicationCategoryList.FirstOrDefault();
+            }
         }
     }
 }
