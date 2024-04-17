@@ -68,6 +68,20 @@
     </ApplicationDefinition>
     <Compile Include="Core\ObservableObject.cs" />
     <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Easter\Flappy.cs" />
+    <Compile Include="Easter\Flappy.Obstacle.cs" />
+    <Compile Include="Easter\Flappy.Player.cs" />
+    <Compile Include="Easter\ViewModel\Flappy_ViewModel.cs" />
+    <Compile Include="Easter\View\Flappy_View.xaml.cs">
+      <DependentUpon>Flappy_View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Easter\LeaderboardManager.cs" />
+    <Compile Include="Easter\View\HOFinputView.xaml.cs">
+      <DependentUpon>HOFinputView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Easter\View\LeaderBoard_View.xaml.cs">
+      <DependentUpon>LeaderBoard_View.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Model\AppCategory.cs" />
     <Compile Include="MVVM\View\SubView\DetailedList_View.xaml.cs">
       <DependentUpon>DetailedList_View.xaml</DependentUpon>
@@ -75,6 +89,18 @@
     <Compile Include="MVVM\View\TileControl.xaml.cs">
       <DependentUpon>TileControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="Easter\View\Flappy_View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Easter\View\HOFinputView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Easter\View\LeaderBoard_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\SubView\DetailedList_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -151,6 +177,10 @@
     <Resource Include="Ressources\Images\hub-reseau.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Easter\Images\cap.png" />
+    <Resource Include="Easter\Images\tube.png" />
+    <Resource Include="Easter\Images\logoBackground.png" />
+    <Resource Include="Easter\Images\background.png" />
     <Content Include="Libs\VsrFade.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

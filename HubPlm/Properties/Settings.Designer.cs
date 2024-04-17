@@ -34,5 +34,17 @@ namespace ApplicationHub.Properties {
                 this["SimplifiedVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Pseudo {
+            get {
+                return ((string)(this["Pseudo"]));
+            }
+            set {
+                this["Pseudo"] = value;
+            }
+        }
     }
 }

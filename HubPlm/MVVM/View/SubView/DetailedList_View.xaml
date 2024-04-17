@@ -92,9 +92,9 @@
                                 </Style>
                             </TextBlock.Style>
                         </TextBlock>
-                        <TextBox x:Name="UserNametextBox" Height="auto" VerticalContentAlignment="Center"
+                        <TextBox x:Name="SearchTextBox" Height="auto" VerticalContentAlignment="Center"
                                  Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
-                                 Background="Transparent" BorderThickness="0" />
+                                 Background="Transparent" BorderThickness="0"/>
 
                         <fade:FadeButton Background="LightGray" Height="18" Width="18" CornerRadius="9" HorizontalAlignment="Right"
                                          Command="{Binding ClearSearchCommand}">
