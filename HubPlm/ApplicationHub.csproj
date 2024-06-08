@@ -68,6 +68,7 @@
     </ApplicationDefinition>
     <Compile Include="Core\ObservableObject.cs" />
     <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Easter\Flappy.Bird.cs" />
     <Compile Include="Easter\Flappy.cs" />
     <Compile Include="Easter\Flappy.Obstacle.cs" />
     <Compile Include="Easter\Flappy.Player.cs" />

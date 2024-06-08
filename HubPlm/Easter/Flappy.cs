@@ -25,11 +25,13 @@ namespace ApplicationHub.Easter
         private int score;
         private bool isGameRunning;
         private const int MAX_TUBE_NUMBER = 10;
-        private Rectangle bird;
+        private const int MAX_BIRD_NUMBER = 1;
+
         private List<Rectangle> backgrounds;
+        private List<Bird> birds;
         private List<Obstacle> obstacles;
-        private double birdVelocity;
         private double tubesVelocity;
+
         private DispatcherTimer gameTimer;
         private Random random;
 
@@ -39,6 +41,7 @@ namespace ApplicationHub.Easter
         {
             this.Loaded += Flappy_Loaded;
             this.random = new Random();
+            this.birds = new List<Bird>();
             this.obstacles = new List<Obstacle>();
             this.backgrounds = new List<Rectangle>();
             this.ClipToBounds = true;
@@ -53,11 +56,10 @@ namespace ApplicationHub.Easter
         private void InitializeGame()
         {
             score = 0;
-            birdVelocity = 0;
             tubesVelocity = 3;
 
             CreateBackground();
-            CreateObstacle(MAX_TUBE_NUMBER);
+            CreateObstacles(MAX_TUBE_NUMBER);
 
             gameTimer = new DispatcherTimer(DispatcherPriority.Background, Application.Current.Dispatcher);
             gameTimer.Interval = TimeSpan.FromMilliseconds(10);
@@ -66,7 +68,7 @@ namespace ApplicationHub.Easter
             gameTimer.Start();
         }
 
-        private void CreateObstacle(int number)
+        private void CreateObstacles(int number)
         {
             for (int i = 0; i < number; i++)
             {
@@ -82,22 +84,22 @@ namespace ApplicationHub.Easter
             }
             obstacles.Clear();
         }
-
-        private void CreateBird()
-        {
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Easter/Images/logoBackground.png"));
-            imageBrush.Stretch = Stretch.UniformToFill;
-            this.bird = new Rectangle
+        private void CreateBirds(int number)
+        {           
+            birds = new List<Bird>();
+            for (int i = 0; i < number; i++)
             {
-                Width = 50,
-                Height = 50,
-                Fill = imageBrush,
-                RenderTransformOrigin = new Point(0.5, 0.5)
-            };
-            Canvas.SetTop(bird, this.ActualHeight / 2 - bird.ActualHeight / 2);
-            Canvas.SetLeft(bird, this.ActualWidth / 4 - bird.ActualWidth / 2);
-            this.Children.Add(bird);
+                var bird = new Bird(this);
+                birds.Add(bird);
+
+                bird.OnBirdDeath += () =>
+                {
+                    if (birds.All(b => b.IsDead))
+                    {
+                        EndGame();
+                    }
+                };
+            }
         }
         private void CreateBackground()
         {
@@ -130,9 +132,9 @@ namespace ApplicationHub.Easter
             gameTimer.Tick -= LobyGameLoop;
 
             this.ResetObstacles();
-            this.CreateObstacle(MAX_TUBE_NUMBER);
+            this.CreateObstacles(MAX_TUBE_NUMBER);
+            this.CreateBirds(MAX_BIRD_NUMBER);
 
-            this.CreateBird();
             isGameRunning = true;
 
             this.MouseDown += OnMouseDown;
@@ -143,34 +145,11 @@ namespace ApplicationHub.Easter
             OnGameStarted?.Invoke();
         }
 
+        //LOBBY GAME LOOP
         private async void LobyGameLoop(object sender, EventArgs e)
         {
             await MoveObstaclesLobby();
             await MoveBackground();
-        }
-        private async void GameLoop(object sender, EventArgs e)
-        {
-            if (!isGameRunning)
-                return;
-
-            await MoveBird();
-            await MoveObstacles();
-            await MoveBackground();
-            await CheckCollisions();
-            await CheckBirdInScreen();
-        }
-
-        private async Task MoveBird()
-        {
-            // Update bird position
-            if (birdVelocity < 4)
-                birdVelocity += 0.2;
-
-            Canvas.SetTop(bird, Canvas.GetTop(bird) + birdVelocity);
-
-            // Rotate bird based on its velocity
-            double rotationAngle = Math.Atan2(birdVelocity, 20) * 180 / Math.PI;
-            bird.RenderTransform = new RotateTransform(rotationAngle, 0.5, 0.5);
         }
         private async Task MoveObstaclesLobby()
         {
@@ -180,25 +159,45 @@ namespace ApplicationHub.Easter
                 obstacle.CheckRespawn();
             }
         }
+
+
+        //GAME LOOP
+        private async void GameLoop(object sender, EventArgs e)
+        {
+            if (!isGameRunning)
+                return;
+
+            await MoveObstacles();
+
+            foreach (var bird in birds)
+            {
+                var obstacle = bird.GetCurrentObstacle(obstacles);
+
+                await bird.Move();
+
+                var hasCollision = await bird.CheckCollisions(obstacle);
+                var inScreen = await bird.CheckInScreen();
+
+                if (!inScreen || hasCollision)
+                {
+                    bird.KillBird();
+                }
+
+                var hasPassedObstacle = obstacles.Any((o) => bird.CheckIfBirdPassed(o).Result);
+                if (hasPassedObstacle)
+                {
+                    bird.Score++;
+                    GameScored();
+                }
+            }            
+
+            await MoveBackground();
+        }
         private async Task MoveObstacles()
         {
             foreach (Obstacle obstacle in obstacles)
             {
                 obstacle.Move(-tubesVelocity);
-
-                if (Canvas.GetLeft(obstacle.TopTube) <= (Canvas.GetLeft(bird) + bird.Width))
-                {
-                    // Check if bird passed the obstacle
-                    if (obstacle.CheckIfBirdPassed(bird))
-                    {
-                        score++;
-                        OnGameScored?.Invoke();
-
-                        if (score % 10 == 0)
-                            tubesVelocity += 1;
-                    }
-                }
-
                 obstacle.CheckRespawn();
             }
         }
@@ -214,33 +213,25 @@ namespace ApplicationHub.Easter
                 }
             }
         }
-        private async Task CheckCollisions()
-        {
-            Rect birdBounds = new Rect(Canvas.GetLeft(bird), Canvas.GetTop(bird), bird.ActualWidth, bird.ActualHeight);
 
-            foreach (Obstacle obstacle in obstacles)
-            {
-                if (obstacle.CheckCollisions(birdBounds))
-                {
-                    EndGame();
-                    return;
-                }
-            }
-        }
-        private async Task CheckBirdInScreen()
+        private void GameScored()
         {
-            // Check for bird going off screen
-            if (Canvas.GetTop(bird) > this.ActualHeight || Canvas.GetTop(bird) < 0)
+            this.score = birds.Max(b => b.Score);
+            if (this.score > 0 && this.score % 10 == 0)
             {
-                EndGame();
-                return;
+                tubesVelocity += 1;
             }
+
+            OnGameScored?.Invoke();
         }
+
 
         private void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            birdVelocity = -4;
+            Bird bird = birds[0];
+            bird.Jump();
         }
+
 
         private double GetNextObstacleOffset(Obstacle tube)
         {
