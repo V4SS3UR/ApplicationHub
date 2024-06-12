@@ -41,7 +41,7 @@ namespace ApplicationHub.Easter
                 {
                     Width = 50,
                     Height = 50,
-                    Fill = new SolidColorBrush(Colors.Red),
+                    Fill = imageBrush,
                     RenderTransformOrigin = new Point(0.5, 0.5)
                 };
 

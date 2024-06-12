@@ -1,21 +1,18 @@
 ﻿using ApplicationHub.Core;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ApplicationHub.Properties
 {
     public class AppModel : ObservableObject
     {
-        public RelayCommand OnClickCommand { get; set; }
+        public RelayCommand ClickCommand { get; set; }
+        public RelayCommand OpenFolderCommand { get; set; }
 
 
         private string _path; public string Path
@@ -54,11 +51,8 @@ namespace ApplicationHub.Properties
 
 
 
-        public AppModel(string[] data)
+        public AppModel(string filePath, string category)
         {
-            string filePath = data[0];
-            string category = data[1];
-
             this.Path = filePath;
             this.Name = new FileInfo(filePath).Name.Split(new string[] { ".exe" }, StringSplitOptions.None).First();
             this.Category = category;
@@ -67,15 +61,21 @@ namespace ApplicationHub.Properties
             {
                 System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(filePath);
                 this.Icon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                this.Icon.Freeze();
                 icon.Dispose();
 
                 GetMetaData();
             }
 
 
-            this.OnClickCommand = new RelayCommand(
+            this.ClickCommand = new RelayCommand(
                 o => Process.Start(Path),
                 c => File.Exists(Path));
+
+            // Open folder of the app
+            this.OpenFolderCommand = new RelayCommand(
+                o => Process.Start("explorer.exe", FolderPath),
+                c => Directory.Exists(FolderPath));
         }
 
         public void GetMetaData()
@@ -91,12 +91,13 @@ namespace ApplicationHub.Properties
                 {
                     // Get metadata from the file
                     this.Description = File.ReadAllText(metaDataPath + "\\description.txt");
-                    //get image
 
+                    //get image
                     string imagePath = Directory.GetFiles(metaDataPath, "image.*").FirstOrDefault();
                     if(imagePath != null)
                     {
                         this.Image = new BitmapImage(new Uri(imagePath));
+                        this.Image.Freeze();
                     }
                 }
             }

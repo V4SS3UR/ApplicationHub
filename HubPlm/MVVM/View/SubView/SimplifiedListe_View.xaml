@@ -68,8 +68,14 @@
                                             </Style.Triggers>
                                         </Style>
                                     </StackPanel.Style>
-                                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
-                                               HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
+                                               VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
+                                               VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    
                                     <ItemsControl ItemsSource="{Binding AppModelListView}" Grid.Row="1">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
