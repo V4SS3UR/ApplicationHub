@@ -1,9 +1,7 @@
 ﻿using ApplicationHub.Core;
 using ApplicationHub.MVVM.View;
 using ApplicationHub.Properties;
-using System.ComponentModel;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows.Controls;
 
 namespace ApplicationHub.MVVM.ViewModel
