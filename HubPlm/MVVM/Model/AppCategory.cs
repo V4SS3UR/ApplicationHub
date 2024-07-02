@@ -1,5 +1,4 @@
 ﻿using ApplicationHub.Core;
-using ApplicationHub.Properties;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;

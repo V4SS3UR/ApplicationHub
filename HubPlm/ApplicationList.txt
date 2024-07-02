@@ -16,6 +16,8 @@ G:\JIKAN tools\
 S:\Exploit\Outils\Macros\ViewerPROD\VIEWERPROD_Launcher.exe
 S:\Controle\Anthony VASSEUR\MACRO\OUTILS\PEDoc\bin\v1.1
 S:\Controle\Anthony VASSEUR\MACRO\OUTILS\PedLotusAutomation\Appli
+F:\Users\be\commun\BE_MSP\06_Outils\01_Utilitaire ENG\01_Navigateur\Navigateur\Navigateur.exe
+F:\Users\be\commun\BE_MSP\06_Outils\16_Veejy\Veejy.exe
 
 
 [NumAlliance]

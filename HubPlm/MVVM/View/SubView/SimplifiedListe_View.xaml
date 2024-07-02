@@ -5,30 +5,105 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ApplicationHub.MVVM.View"
              xmlns:vm="clr-namespace:ApplicationHub.MVVM.ViewModel"
-             xmlns:c="clr-namespace:ApplicationHub"
+             xmlns:model="clr-namespace:ApplicationHub.MVVM.Model"
              xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             xmlns:core="clr-namespace:ApplicationHub.Core"
+             xmlns:converters="clr-namespace:ApplicationHub.Core.Converters"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="590">
 
     <UserControl.DataContext>
-        <vm:MainInterface_ViewModel />
+        <vm:MainInterface_ViewModel/>
     </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <converters:LimitedItemsConverter x:Key="LimitedItemsConverter"/>
+
+        <DataTemplate x:Key="Tile" DataType="{x:Type model:AppModel}">
+            <local:TileControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6">
+                <local:TileControl.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Lancer" Command="{Binding ClickCommand}" FontSize="13"/>
+                        <MenuItem Header="Ouvrir emplacement" Command="{Binding OpenFolderCommand}" FontSize="13">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Folder}" Stretch="Uniform" Fill="#5000" Margin="1"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </local:TileControl.ContextMenu>
+            </local:TileControl>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="CustomAppTile" DataType="{x:Type model:AppModel}">
+            <local:TileControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="6">
+                <local:TileControl.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Supprimer" Command="{Binding RemoveCommand}">
+                            <MenuItem.Icon>
+                                <Path Data="{StaticResource Trashcan}" Stretch="Uniform" Fill="#5000" Margin="1"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </local:TileControl.ContextMenu>
+            </local:TileControl>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MinimalTile" DataType="{x:Type model:AppModel}">
+            <local:MinimalTileControl HorizontalAlignment="Center" VerticalAlignment="Center"/>   
+        </DataTemplate>
+
+        <DataTemplate x:Key="AddTile" DataType="{x:Type model:AppModel}">
+            <local:AddTileControl HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </DataTemplate>
+    </UserControl.Resources>
 
     <Grid Background="#06455B">
 
-        <Border Background="#07779C" Padding="5">
+        <Border Background="#07779C">
 
             <Grid>
 
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Border Background="White" Height="30" BorderBrush="Black" Margin="5" CornerRadius="5">
+                <Border Grid.Row="0" Background="#1FFF">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding PinnedApplicationListView.Count}" Value="0">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <DockPanel Margin="3">
+                        <Path Data="{StaticResource Pin}" Fill="#FFF" Stretch="Uniform" Height="25" Margin="5" RenderTransformOrigin="0.5,0.5">
+                            <Path.RenderTransform>
+                                <RotateTransform Angle="45"/>
+                            </Path.RenderTransform>
+                        </Path>
+                        <TextBlock Text=":" FontSize="18" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="3,0"/>
+
+                        <ItemsControl ItemsSource="{Binding PinnedApplicationListView}" ItemTemplate="{StaticResource MinimalTile}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                    </DockPanel>
+                </Border>
+
+                <Border Grid.Row="1" Background="White" Height="30" BorderBrush="Black" Margin="5" CornerRadius="5">
+
                     <Grid Margin="15,5,5,5">
                         <TextBlock Height="auto" Text="Rechercher" Margin="1,0"
-                                   FontSize="15" FontWeight="Thin" Foreground="Gray">
+                                FontSize="15" FontWeight="Thin" Foreground="Gray">
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="Visibility" Value="Collapsed" />
@@ -41,65 +116,95 @@
                             </TextBlock.Style>
                         </TextBlock>
                         <TextBox x:Name="UserNametextBox" Height="auto"
-                                 VerticalContentAlignment="Center"
-                                 Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
-                                 Background="Transparent" BorderThickness="0" />
+                                VerticalContentAlignment="Center"
+                                Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
+                                Background="Transparent" BorderThickness="0" />
 
                         <fade:FadeButton Background="LightGray" Height="20" Width="20" CornerRadius="10" HorizontalAlignment="Right"
-                                         Command="{Binding ClearSearchCommand}">
+                                        Command="{Binding ClearSearchCommand}">
                             <Path Data="{StaticResource CrossCircle}" Fill="#8FFF" Stretch="Uniform" Margin="1"/>
                         </fade:FadeButton>
                     </Grid>
+                    
                 </Border>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"  Margin="5">
 
-                    <ItemsControl ItemsSource="{Binding ApplicationCategoryListView}" Grid.Row="1">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                    <StackPanel>
 
-                                <StackPanel>
-                                    <StackPanel.Style>
-                                        <Style TargetType="StackPanel">
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding AppModelListView.IsEmpty}" Value="true">
-                                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </StackPanel.Style>
-
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                        <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="Mes applications" FontSize="20" FontWeight="Bold" Foreground="White"
                                                VerticalAlignment="Center" />
-                                        <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
+                            <TextBlock Text="{Binding CustomApplicationListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
                                                VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <!--OwnApp-->
+                        <ItemsControl ItemTemplate="{StaticResource CustomAppTile}">
+                            <ItemsControl.Resources>
+                                <core:BindingProxy x:Key="proxy" MyData="{Binding Path=CustomApplicationListView}"/>
+                            </ItemsControl.Resources>
+                            
+                            <ItemsControl.ItemsSource>
+                                <CompositeCollection>
+                                    <CollectionContainer Collection="{Binding Source={StaticResource proxy}, Path=MyData}"/>
+
+                                    <local:AddTileControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"
+                                        ToolTipService.InitialShowDelay="1000"                                                              
+                                        ToolTipService.BetweenShowDelay="1000" 
+                                        ToolTip="{Binding Description}"/>                                
+                                </CompositeCollection>
+                            </ItemsControl.ItemsSource>
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <!--Category--> 
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding CategoryListView}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <StackPanel>
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding AppModelListView.IsEmpty}" Value="true">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                            <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
+                                               VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
+                                               VerticalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <ItemsControl ItemsSource="{Binding AppModelListView}"
+                                                      ItemTemplate="{StaticResource Tile}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
                                     </StackPanel>
-                                    
-                                    <ItemsControl ItemsSource="{Binding AppModelListView}" Grid.Row="1">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <c:TileControl HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                                               ToolTipService.InitialShowDelay="1000"                                                              
-                                                               ToolTipService.BetweenShowDelay="1000" 
-                                                               ToolTip="{Binding Description}"/>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                    </StackPanel>                    
                 </ScrollViewer>
             </Grid>
         </Border>

@@ -12,7 +12,7 @@ namespace ApplicationHub.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.9.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -44,6 +44,51 @@ namespace ApplicationHub.Properties {
             }
             set {
                 this["Pseudo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection LastUsedApplicationList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["LastUsedApplicationList"]));
+            }
+            set {
+                this["LastUsedApplicationList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection PinnedApplicationList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PinnedApplicationList"]));
+            }
+            set {
+                this["PinnedApplicationList"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FloatingState {
+            get {
+                return ((bool)(this["FloatingState"]));
+            }
+            set {
+                this["FloatingState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection PersonnalApplicationPathList {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PersonnalApplicationPathList"]));
+            }
+            set {
+                this["PersonnalApplicationPathList"] = value;
             }
         }
     }
