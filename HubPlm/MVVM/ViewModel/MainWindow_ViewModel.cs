@@ -32,6 +32,12 @@ namespace ApplicationHub.MVVM.ViewModel
             set { _currentView = value; OnPropertyChanged(); }
         }
 
+        private UserControl _easterView; public UserControl EasterView
+        {
+            get { return _easterView; }
+            set { _easterView = value; OnPropertyChanged(); }
+        }
+
         private bool _simplifiedVersion; public bool SimplifiedVersion
         {
             get { return _simplifiedVersion; }

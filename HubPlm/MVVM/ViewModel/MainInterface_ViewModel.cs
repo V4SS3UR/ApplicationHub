@@ -1,4 +1,5 @@
 ﻿using ApplicationHub.Core;
+using ApplicationHub.Easter.View;
 using ApplicationHub.MVVM.Model;
 using ApplicationHub.Properties;
 using System;
@@ -8,6 +9,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
+using System.Windows.Media.Animation;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
@@ -39,6 +41,8 @@ namespace ApplicationHub.MVVM.ViewModel
                     item.AppModelListView?.Refresh();
                 }
                 this.ApplicationCategoryListView.Refresh();
+
+                CheckEaster();
 
                 OnPropertyChanged();
             }
@@ -91,6 +95,18 @@ namespace ApplicationHub.MVVM.ViewModel
             if(this.SelectedApplicationCategory == null)
             {
                 this.SelectedApplicationCategory = this.ApplicationCategoryList.FirstOrDefault();
+            }
+        }
+
+
+        private void CheckEaster()
+        {
+            if(this.SearchString == "FLAPPY")
+            {
+                var flappy = new Flappy_View();
+                flappy.Flappy.CloseGameAction = new Action(() => MainWindow_ViewModel.Instance.EasterView = null);
+                MainWindow_ViewModel.Instance.EasterView = flappy;
+                this.SearchString = string.Empty;
             }
         }
     }
