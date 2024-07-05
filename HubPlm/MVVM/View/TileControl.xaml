@@ -5,11 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ApplicationHub.Properties"
              xmlns:cc="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             xmlns:m="clr-namespace:ApplicationHub.MVVM.Model"
              mc:Ignorable="d"
              d:DesignHeight="100" d:DesignWidth="100"
              UseLayoutRounding="True" SnapsToDevicePixels="True"
              RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.ClearTypeHint="Enabled"
              Background="Transparent">
+
+    <d:UserControl.DataContext>
+        <m:AppModel/>
+    </d:UserControl.DataContext>
 
     <Border Name="tileBorder" Background="Transparent" Padding="5" Margin="1">
 
@@ -23,7 +28,7 @@
 
             <cc:FadeButton Background="#5FFF" FocusedBackground="#7FFF"
                            CornerRadius="5"
-                           Command="{Binding Command}"
+                           Command="{Binding OnClickCommand}"
                            Width="100" Height="90" Cursor="Hand">
 
                 <Grid Margin="5">
@@ -33,7 +38,7 @@
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
 
-                    <Image Source="{Binding Icon}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+                    <Image Source="{Binding Icon, Mode=TwoWay}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
 
                     <TextBlock Grid.Row="1" Text="{Binding Name}" FontSize="10"
                                FontWeight="Medium" Foreground="{StaticResource SemiBlackForegroundColor}"
@@ -41,7 +46,8 @@
                 </Grid>
             </cc:FadeButton>
 
-            <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent" />
+            <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent"
+                    IsHitTestVisible="False"/>
         </Grid>
     </Border>
 </UserControl>
