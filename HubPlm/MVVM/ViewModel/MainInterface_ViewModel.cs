@@ -7,9 +7,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Windows.Media.Animation;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
@@ -57,7 +56,10 @@ namespace ApplicationHub.MVVM.ViewModel
             this.ApplicationCategoryList = new ObservableCollection<AppCategory>();
             this.ApplicationCategoryListView = new CollectionViewSource { Source = this.ApplicationCategoryList }.View;
 
-            AppFinder.ApplicationPathList.CollectionChanged += ApplicationPathList_CollectionChanged;
+            AppFinder appFinder = new AppFinder();
+            appFinder.OnApplicationFinded += AppFinder_OnApplicationFinded;
+            appFinder.OnCategoryFinded += AppFinder_OnCategoryFinded;
+            Task.Run(() => appFinder.Find());
 
             this.SearchString = string.Empty;
 
@@ -66,35 +68,53 @@ namespace ApplicationHub.MVVM.ViewModel
             this.ClearSearchCommand = new RelayCommand(o => this.SearchString = string.Empty);
         }
 
+        
 
-
-        private void ApplicationPathList_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AppFinder_OnApplicationFinded(AppModel appModel)
         {
-            foreach (string[] item in e.NewItems)
+            AppCategory category = this.ApplicationCategoryList.FirstOrDefault(o => o.Name == appModel.Category);
+
+            App.Current.Dispatcher.Invoke(() =>
             {
-                AppModel appModel = new AppModel(item);
                 this.originalApplicationList.Add(appModel);
 
-                AppCategory category = this.ApplicationCategoryList.FirstOrDefault(o => o.Name == appModel.Category);
-
-                if (category == null)
+                if (category != null)
                 {
-                    category = new AppCategory(appModel.Category);
-                    this.ApplicationCategoryList.Add(category);
-
-                    category.AppModelListView.Filter += o =>
+                    if (!category.AppModelList.Contains(appModel))
                     {
-                        AppModel app = o as AppModel;
-                        return string.IsNullOrEmpty(SearchString) || app.Name.ToLower().Contains(SearchString.ToLower());
-                    };
+                        category.AppModelList.Add(appModel);
+                    }
                 }
+            });
 
-                category.AddApp(appModel);
-            }
+            
 
-            if(this.SelectedApplicationCategory == null)
+            if (this.SelectedApplicationCategory == null)
             {
                 this.SelectedApplicationCategory = this.ApplicationCategoryList.FirstOrDefault();
+            }
+        }
+
+        private void AppFinder_OnCategoryFinded(AppCategory category)
+        {      
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                category.AppModelListView.Filter += o =>
+                {
+                    AppModel app = o as AppModel;
+                    return string.IsNullOrEmpty(SearchString) || app.Name.ToLower().Contains(SearchString.ToLower());
+                };
+                this.ApplicationCategoryList.Add(category);
+            });
+
+            // Add original applications to the category
+            var apps = this.originalApplicationList.Where(o => o.Category == category.Name).ToList();
+            foreach (var app in apps)
+            {
+                if (!category.AppModelList.Contains(app))
+                {
+                    category.AppModelList.Add(app);                
+                }
             }
         }
 

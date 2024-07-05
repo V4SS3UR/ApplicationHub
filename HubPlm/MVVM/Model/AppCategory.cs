@@ -1,10 +1,8 @@
 ﻿using ApplicationHub.Core;
 using ApplicationHub.Properties;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Data;
 
 namespace ApplicationHub.MVVM.Model
@@ -40,15 +38,6 @@ namespace ApplicationHub.MVVM.Model
             this.AppModelListView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
 
             this.SelectedAppModel = this.AppModelList.FirstOrDefault();
-        }
-
-
-        public void AddApp(AppModel appModel)
-        {
-            App.Current.Dispatcher.Invoke((Action)(delegate
-            {
-                this.AppModelList.Add(appModel);
-            }));
         }
     }
 }
