@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ApplicationHub.MVVM.View"
              xmlns:vm="clr-namespace:ApplicationHub.MVVM.ViewModel"
              xmlns:c="clr-namespace:ApplicationHub"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="590">
 

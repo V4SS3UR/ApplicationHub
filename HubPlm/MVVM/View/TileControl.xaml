@@ -16,38 +16,44 @@
         <m:AppModel/>
     </d:UserControl.DataContext>
 
-    <Border Name="tileBorder" Background="Transparent" Padding="5" Margin="1">
+    <Border Name="tileBorder" Padding="5" Margin="1"
+            MouseEnter="TileControl_MouseEnter"
+            MouseLeave="TileControl_MouseLeave">
 
-        <Grid RenderTransformOrigin="0.5,0.5" Background="Transparent">
+        <cc:FastShadow Color="#2000" CornerRadius="5" BlurRadius="10" ShadowDepth="5">
 
-            <Grid.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
-                </TransformGroup>
-            </Grid.RenderTransform>
+            <Grid RenderTransformOrigin="0.5,0.5">
 
-            <cc:FadeButton Background="#5FFF" FocusedBackground="#7FFF"
-                           CornerRadius="5"
-                           Command="{Binding OnClickCommand}"
-                           Width="100" Height="90" Cursor="Hand">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                    </TransformGroup>
+                </Grid.RenderTransform>
 
-                <Grid Margin="5">
+                <cc:FadeButton Background="#FF5BA4BD"
+                                   CornerRadius="5"
+                                   Command="{Binding OnClickCommand}"
+                                   Width="100" Height="100" Cursor="Hand">
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
+                    <Grid Margin="5">
 
-                    <Image Source="{Binding Icon, Mode=TwoWay}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="1" Text="{Binding Name}" FontSize="10"
-                               FontWeight="Medium" Foreground="{StaticResource SemiBlackForegroundColor}"
-                               TextWrapping="Wrap" TextAlignment="Center" />
-                </Grid>
-            </cc:FadeButton>
+                        <Image Source="{Binding Icon, Mode=TwoWay}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
 
-            <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent"
-                    IsHitTestVisible="False"/>
-        </Grid>
+                        <TextBlock Grid.Row="1" Text="{Binding Name}" FontSize="10"
+                                       FontWeight="Medium" Foreground="{StaticResource SemiBlackForegroundColor}"
+                                       TextWrapping="Wrap" TextAlignment="Center" />
+                    </Grid>
+                </cc:FadeButton>
+
+                <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent"
+                            IsHitTestVisible="False"/>
+            </Grid>
+
+        </cc:FastShadow>
     </Border>
 </UserControl>
