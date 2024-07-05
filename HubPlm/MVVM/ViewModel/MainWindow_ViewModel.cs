@@ -1,15 +1,18 @@
-﻿using ApplicationHub.MVVM.View;
+﻿using ApplicationHub.Core;
+using ApplicationHub.MVVM.View;
+using ApplicationHub.Properties;
 using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
-    public class MainWindow_ViewModel : INotifyPropertyChanged
+    public class MainWindow_ViewModel : ObservableObject
     {
         public static MainWindow_ViewModel Instance;
 
-        public static MainInterface_View MainInterface_View { get; set; }
+        public static UserControl MainInterface_View { get; set; }
 
         private string _title; public string Title
         {
@@ -23,10 +26,23 @@ namespace ApplicationHub.MVVM.ViewModel
             set { _titleVersion = value; }
         }
 
-        private object _currentView; public object CurrentView
+        private UserControl _currentView; public UserControl CurrentView
         {
             get { return _currentView; }
             set { _currentView = value; OnPropertyChanged(); }
+        }
+
+        private bool _simplifiedVersion; public bool SimplifiedVersion
+        {
+            get { return _simplifiedVersion; }
+            set 
+            { 
+                _simplifiedVersion = value;
+                Settings.Default.SimplifiedVersion = value;
+                Settings.Default.Save();
+                OnSimplifiedVersionChanged();
+                OnPropertyChanged(); 
+            }
         }
 
         public MainWindow_ViewModel()
@@ -36,18 +52,26 @@ namespace ApplicationHub.MVVM.ViewModel
             string assemblyNameVersionMinor = Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
             string assemblyNameVersionMajor = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString();
             Title = "Application Hub";
-            TitleVersion = $"V{assemblyNameVersionMajor}.{assemblyNameVersionMinor}";
+            TitleVersion = $"v{assemblyNameVersionMajor}.{assemblyNameVersionMinor}";
 
-            MainInterface_View = new MainInterface_View();
-            CurrentView = MainInterface_View;
+            SimplifiedVersion = Settings.Default.SimplifiedVersion;
         }
 
-        //Notify
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnSimplifiedVersionChanged()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (SimplifiedVersion)
+            {
+                MainInterface_View = new SimplifiedListe_View();
+            }
+            else
+            {
+                MainInterface_View = new DetailedList_View();
+            }
+
+            if(CurrentView != null)
+                MainInterface_View.DataContext = CurrentView.DataContext;
+
+            CurrentView = MainInterface_View;
         }
     }
 }

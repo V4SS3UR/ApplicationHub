@@ -1,4 +1,5 @@
-﻿using ApplicationHub.Properties;
+﻿using ApplicationHub.Core;
+using ApplicationHub.Properties;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +9,7 @@ using System.Windows.Data;
 
 namespace ApplicationHub.MVVM.Model
 {
-    public class AppCategory : INotifyPropertyChanged
+    public class AppCategory : ObservableObject
     {
         private string _name; public string Name
         {
@@ -22,13 +23,23 @@ namespace ApplicationHub.MVVM.Model
             get { return _appModelList; }
             set { _appModelList = value; OnPropertyChanged(); }
         }
+        private AppModel _selectedAppModel; public AppModel SelectedAppModel
+        {
+            get { return _selectedAppModel; }
+            set { _selectedAppModel = value; OnPropertyChanged(); }
+        }
+
 
         public AppCategory(string name)
         {
             this.Name = name;
 
             this.AppModelList = new ObservableCollection<AppModel>();
-            this.AppModelListView = new CollectionViewSource { Source = this.AppModelList }.View;            
+            this.AppModelListView = new CollectionViewSource { Source = this.AppModelList }.View;
+
+            this.AppModelListView.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+
+            this.SelectedAppModel = this.AppModelList.FirstOrDefault();
         }
 
 
@@ -38,17 +49,6 @@ namespace ApplicationHub.MVVM.Model
             {
                 this.AppModelList.Add(appModel);
             }));
-        }
-
-
-
-
-        //Notify
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

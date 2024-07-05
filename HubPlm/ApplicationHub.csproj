@@ -66,11 +66,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\ObservableObject.cs" />
     <Compile Include="Core\RelayCommand.cs" />
     <Compile Include="MVVM\Model\AppCategory.cs" />
+    <Compile Include="MVVM\View\SubView\DetailedList_View.xaml.cs">
+      <DependentUpon>DetailedList_View.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\TileControl.xaml.cs">
       <DependentUpon>TileControl.xaml</DependentUpon>
     </Compile>
+    <Page Include="MVVM\View\SubView\DetailedList_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\MainWindow_View.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -84,7 +92,7 @@
       <DependentUpon>MainWindow_View.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="MVVM\View\MainInterface_View.xaml">
+    <Page Include="MVVM\View\SubView\SimplifiedListe_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -92,17 +100,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Ressources\Geometry.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MVVM\ViewModel\MainInterface_ViewModel.cs" />
-    <Compile Include="MVVM\View\MainInterface_View.xaml.cs">
-      <DependentUpon>MainInterface_View.xaml</DependentUpon>
+    <Compile Include="MVVM\View\SubView\SimplifiedListe_View.xaml.cs">
+      <DependentUpon>SimplifiedListe_View.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Model\AppModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\AppFinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -50,8 +50,7 @@
                     </Grid>
                 </cc:FadeButton>
 
-                <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent"
-                            IsHitTestVisible="False"/>
+                <Border BorderBrush="#BFFF" BorderThickness="0,0,3,4" CornerRadius="5" Background="Transparent" IsHitTestVisible="False"/>
             </Grid>
 
         </cc:FastShadow>
