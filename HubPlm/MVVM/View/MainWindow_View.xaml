@@ -165,7 +165,7 @@
 
 
 
-        <Border x:Name="FloatingBorder" RenderTransformOrigin="0.5,0.5"
+        <Border x:Name="FloatingBorder" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="2"
                 HorizontalAlignment="Left" VerticalAlignment="Top" Margin="5">
             <Border.RenderTransform>
                 <TransformGroup>
@@ -173,15 +173,57 @@
                     <RotateTransform Angle="0"/>
                 </TransformGroup>
             </Border.RenderTransform>
-            
+
             <Image x:Name="FloatingLogoImage" Height="{Binding ElementName=LogoImage, Path=ActualHeight}"
                            Source="/Ressources/Images/hub-reseau.png" RenderOptions.BitmapScalingMode="HighQuality"
                    MouseDown="FloatingLogoImage_MouseDown"
                    MouseEnter="FloatingLogoImage_MouseEnter"
                    MouseLeave="FloatingLogoImage_MouseLeave"/>
 
-
+            <!--<Border.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <BooleanAnimationUsingKeyFrames
+                                Storyboard.TargetName="MinimalPopup"
+                                Storyboard.TargetProperty="IsOpen">
+                                <DiscreteBooleanKeyFrame Value="True" KeyTime="0"/>
+                            </BooleanAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <BooleanAnimationUsingKeyFrames
+                                Storyboard.TargetName="MinimalPopup"
+                                Storyboard.TargetProperty="IsOpen">
+                                <DiscreteBooleanKeyFrame Value="False" KeyTime="0"/>
+                            </BooleanAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Border.Triggers>-->
         </Border>
+
+        <!--<Popup x:Name="MinimalPopup" Placement="Left" StaysOpen="True"
+               VerticalAlignment="Center" VerticalOffset="20" AllowsTransparency="True"
+               PopupAnimation="Slide" FlowDirection="LeftToRight" Panel.ZIndex="1">
+
+            <Popup.Triggers>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsOpen">
+                                <DiscreteBooleanKeyFrame Value="False" KeyTime="0"/>
+                            </BooleanAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Popup.Triggers>
+            
+            <view:MinimalListe_View DataContext="{Binding CurrentView.DataContext}"/>
+        </Popup>-->
     </Grid>
 
 </Window>

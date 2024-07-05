@@ -7,11 +7,18 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace ApplicationHub.Properties
+namespace ApplicationHub.MVVM.Model
 {
     public class AppModel : ObservableObject
     {
+        public event Action<AppModel> OnClickEvent;
+        public event Action<AppModel> OnRemoveEvent;
+        public event Action<AppModel, bool> OnPinnedChangeEvent;
+
+
+        public RelayCommand PinCommand { get; set; }
         public RelayCommand ClickCommand { get; set; }
+        public RelayCommand RemoveCommand { get; set; }
         public RelayCommand OpenFolderCommand { get; set; }
 
 
@@ -47,6 +54,17 @@ namespace ApplicationHub.Properties
         }
 
         public string FolderPath => System.IO.Path.GetDirectoryName(Path);
+
+        private bool _isPinned; public bool IsPinned
+        {
+            get { return _isPinned; }
+            set
+            {
+                _isPinned = value;
+                OnPinnedChangeEvent?.Invoke(this, value);
+                OnPropertyChanged();
+            }
+        }
         
 
 
@@ -69,13 +87,28 @@ namespace ApplicationHub.Properties
 
 
             this.ClickCommand = new RelayCommand(
-                o => Process.Start(Path),
+                o => OnClick(),
                 c => File.Exists(Path));
 
             // Open folder of the app
             this.OpenFolderCommand = new RelayCommand(
                 o => Process.Start("explorer.exe", FolderPath),
                 c => Directory.Exists(FolderPath));
+
+            this.RemoveCommand = new RelayCommand(
+                o => OnRemoveEvent?.Invoke(this),
+                c => true);
+        }
+
+        public void RefreshIcon()
+        {
+            if (File.Exists(Path))
+            {
+                System.Drawing.Icon icon = System.Drawing.Icon.ExtractAssociatedIcon(Path);
+                this.Icon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                this.Icon.Freeze();
+                icon.Dispose();
+            }
         }
 
         public void GetMetaData()
@@ -90,7 +123,13 @@ namespace ApplicationHub.Properties
                 if(File.Exists(metaDataPath + "\\description.txt"))
                 {
                     // Get metadata from the file
-                    this.Description = File.ReadAllText(metaDataPath + "\\description.txt");
+                    try
+                    {
+                        this.Description = File.ReadAllText(metaDataPath + "\\description.txt");
+                    }
+                    catch (Exception)
+                    {
+                    }
 
                     //get image
                     string imagePath = Directory.GetFiles(metaDataPath, "image.*").FirstOrDefault();
@@ -106,8 +145,22 @@ namespace ApplicationHub.Properties
                 // Create metadata file
                 Directory.CreateDirectory(metaDataPath);
                 string metaDataFile = metaDataPath + "\\description.txt";
-                File.Create(metaDataFile).Close();
+
+                try
+                {
+                    File.Create(metaDataFile).Close();
+                }
+                catch (Exception)
+                {
+                }
             }
+        }
+
+
+        private void OnClick()
+        {
+            Process.Start(Path);
+            OnClickEvent?.Invoke(this);
         }
     }
 }

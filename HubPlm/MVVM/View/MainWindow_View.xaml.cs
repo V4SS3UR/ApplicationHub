@@ -1,13 +1,18 @@
-﻿using ApplicationHub.MVVM.ViewModel;
+﻿using ApplicationHub.MVVM.View;
+using ApplicationHub.MVVM.ViewModel;
+using ApplicationHub.Properties;
 using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
+using System.Windows.Threading;
 
 namespace ApplicationHub
 {
@@ -21,16 +26,26 @@ namespace ApplicationHub
         public MainWindow_ViewModel ViewModel { get; set; }
 
 
+        private bool floatingState
+        {
+            get => Settings.Default.FloatingState;
+            set
+            {
+                Settings.Default.FloatingState = value;
+                Settings.Default.Save();
+            }
+        }
+
 
         private double baseHeight;
         private double baseWidth;
         private double baseLeft;
         private double baseTop;
-        private bool floatingState;
         private Stopwatch stopwatch;
 
         private Screen currentScreen;
-
+        private Window minimalWindow;
+        private DispatcherTimer mouseCheckTimer;
 
         public MainWindow_View()
         {
@@ -43,6 +58,16 @@ namespace ApplicationHub
             stopwatch = new Stopwatch();
 
             currentScreen = Screen.FromHandle(new WindowInteropHelper(this).Handle);
+            
+            this.Loaded += MainWindow_View_Loaded;
+        }
+
+        private void MainWindow_View_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (floatingState)
+            {
+                SetFloatingState();
+            }
         }
 
         protected override void OnLocationChanged(EventArgs e)
@@ -50,6 +75,12 @@ namespace ApplicationHub
             base.OnLocationChanged(e);
 
             currentScreen = Screen.FromHandle(new WindowInteropHelper(this).Handle);
+
+            if (floatingState && minimalWindow != null)
+            {
+                minimalWindow.Close();
+                minimalWindow = null;
+            }
         }
         private new void DragMove()
         {
@@ -76,7 +107,8 @@ namespace ApplicationHub
 
         private void MinimizeBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.WindowState = WindowState.Minimized;
+            SetFloatingState();
+            //this.WindowState = WindowState.Minimized;
         }
 
         private void DockBtn_Click(object sender, RoutedEventArgs e)
@@ -109,7 +141,14 @@ namespace ApplicationHub
                 {
                     if (e.ClickCount == 1)
                     {
-                        ToggleFloatingState();
+                        if(floatingState)
+                        {
+                            UnsetFloatingState();
+                        }
+                        else
+                        {
+                            SetFloatingState();
+                        }
                     }
                 }
 
@@ -117,67 +156,73 @@ namespace ApplicationHub
                 stopwatch.Reset();
             }
         }
-        private void ToggleFloatingState()
+        private void SetFloatingState()
         {
             var edgeBorderScaleTransform = this.EdgeBorder.RenderTransform as ScaleTransform;
 
             var floatingBorderTransformGroup = this.FloatingBorder.RenderTransform as TransformGroup;
             var floatingBorderScaleTransform = floatingBorderTransformGroup.Children[0] as ScaleTransform;
 
-            if (!floatingState)
+            floatingState = true;
+
+            baseHeight = this.ActualHeight == 0 ? 600 : this.ActualHeight;
+            baseWidth = this.ActualWidth == 0 ? 700 : this.ActualWidth;
+            baseLeft = double.IsNaN(this.Left) ? 0 : this.Left;
+            baseTop = double.IsNaN(this.Top) ? 0 : this.Top;
+
+            this.Topmost = true;
+            this.SizeToContent = SizeToContent.Width;
+            this.MinHeight = this.Height = 100;
+            this.MinWidth = this.Width = 100;    
+            this.ResizeMode = ResizeMode.NoResize;
+            this.EdgeBorder.Visibility = Visibility.Collapsed;                
+            this.FloatingBorder.Margin = new Thickness(10);
+            this.FloatingBorder.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
+            this.FloatingBorder.VerticalAlignment = System.Windows.VerticalAlignment.Center;
+            this.FloatingBorder.Effect = new DropShadowEffect()
             {
-                floatingState = true;
+                Color = (Color)ColorConverter.ConvertFromString("#8000"),
+                Direction = 0,
+                ShadowDepth = 0,
+                Opacity = 0.5,
+                BlurRadius = 10
+            };
 
-                baseHeight = this.ActualHeight;
-                baseWidth = this.ActualWidth;
-                baseLeft = this.Left;
-                baseTop = this.Top;
+            //Position the window at the bottom right corner of the current screen
+            var screenBounds = currentScreen.WorkingArea;
+            var left = screenBounds.Right - this.Width;
+            var top = screenBounds.Bottom - this.Height;               
 
-                this.Topmost = true;
-                this.Height = 100;
-                this.Width = 100;    
-                this.ResizeMode = ResizeMode.NoResize;
-                this.EdgeBorder.Visibility = Visibility.Collapsed;                
-                this.FloatingBorder.Margin = new Thickness(10);
-                this.FloatingBorder.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;
-                this.FloatingBorder.VerticalAlignment = System.Windows.VerticalAlignment.Center;
-                this.FloatingBorder.Effect = new DropShadowEffect()
-                {
-                    Color = (Color)ColorConverter.ConvertFromString("#8000"),
-                    Direction = 0,
-                    ShadowDepth = 0,
-                    Opacity = 0.5,
-                    BlurRadius = 10
-                };
+            AnimateTransform(edgeBorderScaleTransform, 0, 0, floatingState, TimeSpan.FromMilliseconds(0));
+            AnimateTransform(floatingBorderScaleTransform, 2, 2, floatingState, TimeSpan.FromMilliseconds(150));
+            AnimatePosition(left, top, TimeSpan.Zero, TimeSpan.FromMilliseconds(300));            
+        }
+        private void UnsetFloatingState()
+        {
+            var edgeBorderScaleTransform = this.EdgeBorder.RenderTransform as ScaleTransform;
 
-                //Position the window at the bottom right corner of the current screen
-                var screenBounds = currentScreen.WorkingArea;
-                var left = screenBounds.Right - this.Width;
-                var top = screenBounds.Bottom - this.Height;               
+            var floatingBorderTransformGroup = this.FloatingBorder.RenderTransform as TransformGroup;
+            var floatingBorderScaleTransform = floatingBorderTransformGroup.Children[0] as ScaleTransform;
 
-                AnimateTransform(edgeBorderScaleTransform, 0, 0, floatingState, TimeSpan.FromMilliseconds(0));
-                AnimateTransform(floatingBorderScaleTransform, 2, 2, floatingState, TimeSpan.FromMilliseconds(150));
-                AnimatePosition(left, top, TimeSpan.Zero, TimeSpan.FromMilliseconds(300));
-            }
-            else
-            {
-                floatingState = false;
+            
+            floatingState = false;
+            CloseMinimalWindow();
 
-                //Position the window at the last known position
-                AnimateTransform(edgeBorderScaleTransform, 1, 1, floatingState, TimeSpan.FromMilliseconds(150));
-                AnimateTransform(floatingBorderScaleTransform, 1, 1, floatingState, TimeSpan.FromMilliseconds(0));
-                AnimatePosition(baseLeft, baseTop, TimeSpan.Zero, TimeSpan.FromMilliseconds(300));
+            //Position the window at the last known position
+            AnimateTransform(edgeBorderScaleTransform, 1, 1, floatingState, TimeSpan.FromMilliseconds(150));
+            AnimateTransform(floatingBorderScaleTransform, 1, 1, floatingState, TimeSpan.FromMilliseconds(150));
+            AnimatePosition(baseLeft, baseTop, TimeSpan.Zero, TimeSpan.FromMilliseconds(300));
 
-                this.Topmost = false;
-                this.Height = baseHeight;
-                this.Width = baseWidth;
-                this.ResizeMode = ResizeMode.CanResize;
-                this.FloatingBorder.Effect = null;
-                this.FloatingBorder.Margin = new Thickness(5);
-                this.FloatingBorder.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                this.FloatingBorder.VerticalAlignment = System.Windows.VerticalAlignment.Top;                
-                this.EdgeBorder.Visibility = Visibility.Visible;
-            }
+            this.Topmost = false;
+            this.SizeToContent = SizeToContent.Manual;
+            this.Height = baseHeight;
+            this.Width = baseWidth;
+            this.ResizeMode = ResizeMode.CanResize;
+            this.FloatingBorder.Effect = null;
+            this.FloatingBorder.Margin = new Thickness(5);
+            this.FloatingBorder.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+            this.FloatingBorder.VerticalAlignment = System.Windows.VerticalAlignment.Top;
+            this.EdgeBorder.Visibility = Visibility.Visible;
         }
 
         private void SnapToScreenEdge(bool animated = true)
@@ -192,59 +237,58 @@ namespace ApplicationHub
             double targetLeft = left;
             double targetTop = top;
 
-            // Determine the nearest screen edge
-            var absLeft = Math.Abs(left);
-            var absTop = Math.Abs(top);
-            var absRight = Math.Abs(right);
-            var absBottom = Math.Abs(bottom);
+            //Convert to local screen space
+            left -= screenBounds.Left;
+            top -= screenBounds.Top;                        
 
-            var minHorizontalDistance = Math.Min(absLeft, absRight);
-            var minVerticalDistance = Math.Min(absTop, absBottom);
+            // Determine the nearest screen edge
+            var minHorizontalDistance = Math.Min(left, right);
+            var minVerticalDistance = Math.Min(top, bottom);
             var minDistance = Math.Min(minHorizontalDistance, minVerticalDistance);
 
             //trigger only if the window is closer to the edge than the threshold
             double threshold = 150;
+            double margin = 0;
 
-            if (minDistance < threshold)
+            if (minDistance <= threshold)
             {                
                 //Near corner, snap to corner
-                //if (minHorizontalDistance < (threshold * 2/3) && minVerticalDistance < (threshold * 2 / 3))
                 if (minHorizontalDistance < threshold && minVerticalDistance < threshold)
                 {
-                    if(minHorizontalDistance == absLeft)
+                    if(minHorizontalDistance == left)
                     {
-                        targetLeft = screenBounds.Left; 
+                        targetLeft = screenBounds.Left + margin; 
                     }
-                    else if(minHorizontalDistance == absRight)
+                    else if(minHorizontalDistance == right)
                     {
-                        targetLeft = screenBounds.Right - this.Width;
+                        targetLeft = screenBounds.Right - this.Width - margin;
                     }
-                    if (minVerticalDistance == absTop)
+                    if (minVerticalDistance == top)
                     {
-                        targetTop = screenBounds.Top;
+                        targetTop = screenBounds.Top + margin;
                     }
-                    else if (minVerticalDistance == absBottom)
+                    else if (minVerticalDistance == bottom)
                     {
-                        targetTop = screenBounds.Bottom - this.Height;
+                        targetTop = screenBounds.Bottom - this.Height - margin;
                     }
                 }
                 else
                 {
-                    if (minDistance == absLeft)
+                    if (minDistance == left)
                     {
-                        targetLeft = screenBounds.Left;
+                        targetLeft = screenBounds.Left + margin;
                     }
-                    else if (minDistance == absRight)
+                    else if (minDistance == right)
                     {
-                        targetLeft = screenBounds.Right - this.Width;
+                        targetLeft = screenBounds.Right - this.Width - margin;
                     }
-                    if (minDistance == absTop)
+                    if (minDistance == top)
                     {
-                        targetTop = screenBounds.Top;
+                        targetTop = screenBounds.Top + margin;
                     }
-                    else if (minDistance == absBottom)
+                    else if (minDistance == bottom)
                     {
-                        targetTop = screenBounds.Bottom - this.Height;
+                        targetTop = screenBounds.Bottom - this.Height - margin;
                     }
                 }
 
@@ -289,8 +333,12 @@ namespace ApplicationHub
             //Debug.WriteLine("RestoreBoundsPosition: " + this.RestoreBounds.Left + ", " + this.RestoreBounds.Top);
             //Debug.WriteLine("AnimatePosition: " + left + ", " + top);
 
-            var leftAnimation = new DoubleAnimation(this.Left, left, duration);
-            var topAnimation = new DoubleAnimation(this.Top, top, duration);
+            //Ensure non Nan values
+            var fromLeft = double.IsNaN(this.Left) ? 0 : this.Left;
+            var fromTop = double.IsNaN(this.Top) ? 0 : this.Top;
+
+            var leftAnimation = new DoubleAnimation(fromLeft, left, duration);
+            var topAnimation = new DoubleAnimation(fromTop, top, duration);
 
             leftAnimation.BeginTime = beginTime;
             topAnimation.BeginTime = beginTime;
@@ -331,6 +379,14 @@ namespace ApplicationHub
             floatingBorderRotateTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
             floatingBorderScaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
             floatingBorderScaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
+
+
+            //Create a sub window below the floating logo with a list of all the applications
+            if (floatingState)
+            {
+                CreateMinimalWindow();
+            }
+
         }
         private void FloatingLogoImage_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -352,5 +408,136 @@ namespace ApplicationHub
             floatingBorderScaleTransform.BeginAnimation(ScaleTransform.ScaleXProperty, scaleAnimation);
             floatingBorderScaleTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
         }        
+
+
+
+        
+
+        private void CreateMinimalWindow()
+        {
+            if(minimalWindow != null)
+            {
+                return;
+            }
+
+            minimalWindow = new Window()
+            {
+                Owner = this,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                WindowStyle = WindowStyle.None,
+                ResizeMode = ResizeMode.NoResize,
+                ShowInTaskbar = false,
+                AllowsTransparency = true,
+                Background = new SolidColorBrush(Colors.Transparent),
+                Content = new MinimalListe_View()
+                {
+                    DataContext = ((MainWindow_ViewModel)this.DataContext).CurrentView.DataContext,
+                    RenderTransform = new TranslateTransform()
+                }
+            };
+
+            minimalWindow.Loaded += MinimalWindow_Loaded;
+            minimalWindow.Show();
+        }
+        private void MinimalWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Set initial position behind the main window
+            minimalWindow.Left = this.Left + (this.Width - minimalWindow.ActualWidth) / 2;
+            minimalWindow.Top = this.Top + (this.Height - minimalWindow.ActualHeight) / 2;
+            minimalWindow.Opacity = 0; // Start fully transparent
+
+            // Determine docking side
+            bool isDockedLeft = this.Left <= (currentScreen.WorkingArea.X + currentScreen.WorkingArea.Width / 2);
+            var margin = -10;
+            var destinationLeft = isDockedLeft ? this.Left + this.Width + margin : this.Left - minimalWindow.ActualWidth - margin;
+
+            // Animate appearance
+            var leftAnimation = new DoubleAnimation(this.Left + (this.Width / 2), destinationLeft, TimeSpan.FromMilliseconds(300));
+            leftAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
+
+            var opacityAnimation = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(200));
+            opacityAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
+
+            minimalWindow.BeginAnimation(Window.LeftProperty, leftAnimation);
+            minimalWindow.BeginAnimation(Window.OpacityProperty, opacityAnimation);
+
+            // Set up a timer to check mouse position
+            mouseCheckTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(100)
+            };
+            mouseCheckTimer.Tick += MouseCheckTimer_Tick;
+            mouseCheckTimer.Start();
+        }
+
+
+        private void MouseCheckTimer_Tick(object sender, EventArgs e)
+        {
+            if(minimalWindow == null)
+            {
+                return;
+            }
+
+            double margin = 10;
+
+            // Get the mouse position relative to the screen
+            var mousePosition = System.Windows.Forms.Cursor.Position;
+
+            // Convert screen coordinates to WPF coordinates
+            var presentationSource = PresentationSource.FromVisual(this);
+            if (presentationSource != null)
+            {
+                var transform = presentationSource.CompositionTarget.TransformFromDevice;
+                var mousePoint = transform.Transform(new Point(mousePosition.X, mousePosition.Y));
+
+                // Check if mouse is within marginpx of the floating window or the minimal window
+                bool isMouseOverFloatingOrMinimal =
+                    IsPointInBounds(mousePoint, new Rect(this.Left - margin, this.Top - margin, this.Width + 100, this.Height + 100)) ||
+                    IsPointInBounds(mousePoint, new Rect(minimalWindow.Left - margin, minimalWindow.Top - margin, minimalWindow.ActualWidth + 100, minimalWindow.ActualHeight + 100));
+
+                if (!isMouseOverFloatingOrMinimal)
+                {
+                    CloseMinimalWindow();
+                }
+            }
+        }
+
+        private bool IsPointInBounds(Point point, Rect bounds)
+        {
+            return bounds.Contains(point);
+        }
+
+        private void CloseMinimalWindow()
+        {
+            if (minimalWindow != null)
+            {
+                // Determine docking side
+                bool isDockedLeft = this.Left < (currentScreen.WorkingArea.X + currentScreen.WorkingArea.Width / 2);
+                var closeDestinationLeft = isDockedLeft ? this.Left - minimalWindow.ActualWidth : this.Left + this.Width;
+
+                // Animate closing
+                var closeLeftAnimation = new DoubleAnimation(minimalWindow.Left, closeDestinationLeft, TimeSpan.FromMilliseconds(300));
+                closeLeftAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+
+                var closeOpacityAnimation = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(200));
+                closeOpacityAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseIn };
+
+                closeOpacityAnimation.Completed += (s, e) =>
+                {
+                    minimalWindow?.Close();
+                    minimalWindow = null;
+                };
+
+                minimalWindow.BeginAnimation(Window.LeftProperty, closeLeftAnimation);
+                minimalWindow.BeginAnimation(Window.OpacityProperty, closeOpacityAnimation);
+            }
+
+            if (mouseCheckTimer != null)
+            {
+                mouseCheckTimer.Stop();
+                mouseCheckTimer.Tick -= MouseCheckTimer_Tick;
+                mouseCheckTimer = null;
+            }
+        }
     }
 }

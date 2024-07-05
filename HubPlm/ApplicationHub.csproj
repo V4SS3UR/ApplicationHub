@@ -66,8 +66,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\ObservableObject.cs" />
-    <Compile Include="Core\RelayCommand.cs" />
+    <Compile Include="Core\BindingProxy.cs" />
+    <Compile Include="Core\Converters\GreaterThanConverter.cs" />
+    <Compile Include="Core\Converters\LimitedItemsConverter.cs" />
+    <Compile Include="Core\WPF\ObservableObject.cs" />
+    <Compile Include="Core\WPF\RelayCommand.cs" />
     <Compile Include="Easter\Flappy.Bird.cs" />
     <Compile Include="Easter\Flappy.cs" />
     <Compile Include="Easter\Flappy.Obstacle.cs" />
@@ -84,10 +87,19 @@
       <DependentUpon>LeaderBoard_View.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Model\AppCategory.cs" />
+    <Compile Include="MVVM\View\Control\AddTileControl.xaml.cs">
+      <DependentUpon>AddTileControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\Control\MinimalTileControl.xaml.cs">
+      <DependentUpon>MinimalTileControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\SubView\DetailedList_View.xaml.cs">
       <DependentUpon>DetailedList_View.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\View\TileControl.xaml.cs">
+    <Compile Include="MVVM\View\SubView\MinimalListe_View.xaml.cs">
+      <DependentUpon>MinimalListe_View.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\Control\TileControl.xaml.cs">
       <DependentUpon>TileControl.xaml</DependentUpon>
     </Compile>
     <Page Include="Easter\View\Flappy_View.xaml">
@@ -99,6 +111,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Easter\View\LeaderBoard_View.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\Control\AddTileControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MVVM\View\Control\MinimalTileControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -119,11 +139,19 @@
       <DependentUpon>MainWindow_View.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="MVVM\View\SubView\MinimalListe_View.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MVVM\View\SubView\SimplifiedListe_View.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\View\TileControl.xaml">
+    <Page Include="MVVM\View\Control\TileControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ressources\DefaultStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -193,4 +221,8 @@
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>del $(AssemblyName).pdb
+del $(AssemblyName).exe.config</PostBuildEvent>
+  </PropertyGroup>
 </Project>

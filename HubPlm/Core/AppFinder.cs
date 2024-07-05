@@ -1,5 +1,8 @@
 ﻿using ApplicationHub.MVVM.Model;
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -16,7 +19,7 @@ namespace ApplicationHub.Properties
         {
         }
 
-        public async void Find() // Procédure permettant de récupérer les données du fichier DATA
+        public void Find() // Procédure permettant de récupérer les données du fichier DATA
         {
             string assemblyLocation = AppDomain.CurrentDomain.BaseDirectory;
             string initFileLocation = Path.Combine(assemblyLocation, "ApplicationList.txt");
@@ -34,6 +37,8 @@ namespace ApplicationHub.Properties
                 }
             }
 
+            var notifyList = new List<object[]>();
+
             //Then find apps
             foreach (string ligne in lines)
             {
@@ -48,23 +53,29 @@ namespace ApplicationHub.Properties
                     continue;
                 }
 
-                if (ligne.Contains(".exe"))
-                {
-                    NotifyAppModel(ligne, category);
-                }
-                else
-                {
-                    await Task.Run(() =>
-                    {
-                        RetrieveFiles(ligne, category);
-                    });
-                }
+                notifyList.Add(new object[] { ligne, category, ligne.Contains(".exe")});
+            }
 
+            foreach(var task in notifyList)
+            {
+                Task.Run(() =>
+                {
+                    if ((bool)task[2])
+                    {
+                        NotifyAppModel((string)task[0], (string)task[1]);
+                    }
+                    else
+                    {
+                        RetrieveFiles((string)task[0], (string)task[1]);
+                    }
+                });
             }
         }
 
-        private async Task RetrieveFiles(string path, string category)
+        private void RetrieveFiles(string path, string category)
         {
+            Debug.WriteLine(path + ":::" + category);
+
             // Retrieve executable files
             FileInfo[] exeFiles = new DirectoryInfo(path).GetFiles("*.exe", SearchOption.TopDirectoryOnly);
             if (exeFiles.Length > 0)

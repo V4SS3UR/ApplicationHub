@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="ApplicationHub.MVVM.View.AddTileControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ApplicationHub.Properties"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             xmlns:vm="clr-namespace:ApplicationHub.MVVM.ViewModel"
+             mc:Ignorable="d"
+             d:DesignHeight="100" d:DesignWidth="100"
+             UseLayoutRounding="True" SnapsToDevicePixels="True"
+             RenderOptions.BitmapScalingMode="NearestNeighbor" RenderOptions.ClearTypeHint="Enabled"
+             Background="Transparent">
+
+    <d:UserControl.DataContext>
+        <vm:MainInterface_ViewModel/>
+    </d:UserControl.DataContext>
+
+    <Border Name="tileBorder"
+            MouseEnter="TileControl_MouseEnter"
+            MouseLeave="TileControl_MouseLeave">
+
+        <fade:FastShadow Color="#2000" CornerRadius="5" BlurRadius="10" ShadowDepth="5">
+
+            <Grid RenderTransformOrigin="0.5,0.5">
+
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="scaleTransform" ScaleX="1" ScaleY="1" />
+                    </TransformGroup>
+                </Grid.RenderTransform>
+
+                <Grid>
+                    <fade:FadeButton Background="#FF08789C" FocusedBackground="#FF5CA4BD" CornerRadius="5" BorderBrush="#FF5CA4BD" BorderThickness="2"
+                                     Command="{Binding AddAppModelCommand}" Width="100" Height="100">
+                        <Path Data="{StaticResource Plus}" Fill="#8FFF" Stretch="Uniform" Height="30"/>
+                    </fade:FadeButton>
+                </Grid>
+
+            </Grid>
+
+        </fade:FastShadow>
+    </Border>
+</UserControl>

@@ -36,9 +36,9 @@
         </Grid.ColumnDefinitions>
 
         <Border>
-            <ListBox Background="Transparent" BorderThickness="0"
-                     ItemsSource="{Binding ApplicationCategoryListView}" 
-                     SelectedItem="{Binding SelectedApplicationCategory}">
+            <ListBox Background="Transparent" BorderThickness="0" Margin="-1"
+                     ItemsSource="{Binding CategoryListView}" 
+                     SelectedItem="{Binding SelectedCategory}">
 
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="ListBoxItem">
@@ -103,8 +103,8 @@
                 </Border>
 
                 <ListBox Grid.Row="1" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                         ItemsSource="{Binding SelectedApplicationCategory.AppModelListView}" 
-                         SelectedItem="{Binding SelectedApplicationCategory.SelectedAppModel}">
+                         ItemsSource="{Binding SelectedCategory.AppModelListView}" 
+                         SelectedItem="{Binding SelectedCategory.SelectedAppModel}">
                     
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
@@ -158,7 +158,7 @@
                     <Style TargetType="DockPanel">
                         <Setter Property="Visibility" Value="Visible"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel}" Value="{x:Null}">
+                            <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel}" Value="{x:Null}">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
                         </Style.Triggers>
@@ -170,14 +170,14 @@
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Image}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel.Image}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
                     
-                    <Image Source="{Binding SelectedApplicationCategory.SelectedAppModel.Image, Mode=OneWay}" 
+                    <Image Source="{Binding SelectedCategory.SelectedAppModel.Image, Mode=OneWay}" 
                        Height="auto" MaxHeight="300" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
                 </Border>
 
@@ -186,20 +186,20 @@
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Image}" Value="{x:Null}">
+                                <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel.Image}" Value="{x:Null}">
                                     <Setter Property="Visibility" Value="Visible"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
                     </Border.Style>
-                    <Image Source="{Binding SelectedApplicationCategory.SelectedAppModel.Icon, Mode=OneWay}" 
+                    <Image Source="{Binding SelectedCategory.SelectedAppModel.Icon, Mode=OneWay}" 
                        Height="35" RenderOptions.BitmapScalingMode="HighQuality" Margin="5"/>
                 </Border>
 
                 <Grid DockPanel.Dock="Bottom" Margin="10">
                     <fade:FastShadow CornerRadius="0"/>
                     <fade:FadeButton  Background="#FF5BA4BD" Cursor="Hand" CornerRadius="0" Height="50" Margin="0"
-                                 Command="{Binding SelectedApplicationCategory.SelectedAppModel.ClickCommand}">
+                                 Command="{Binding SelectedCategory.SelectedAppModel.ClickCommand}">
                         <TextBlock Text="Lancer" Foreground="#AFFF" FontWeight="Bold" FontSize="20"/>
                     </fade:FadeButton>
                 </Grid>
@@ -208,7 +208,7 @@
 
                     <fade:FastShadow CornerRadius="5"/>
                     <fade:FadeButton  Background="#FF5BA4BD" Cursor="Hand" CornerRadius="5" Height="30"
-                                 Command="{Binding SelectedApplicationCategory.SelectedAppModel.OpenFolderCommand}">
+                                 Command="{Binding SelectedCategory.SelectedAppModel.OpenFolderCommand}">
                         <StackPanel Orientation="Horizontal" Margin="10,0">
                             <Path Data="{StaticResource Folder}" Fill="#AFFF" Stretch="Uniform" Height="20"
                                 ToolTip="Ouvrir l'emplacement"/>
@@ -224,7 +224,7 @@
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Name}" Value="">
+                                <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel.Name}" Value="">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -232,7 +232,7 @@
                     </DockPanel.Style>
                     
                     <TextBlock Text="Nom :" FontWeight="Medium" TextDecorations="Underline"/>
-                    <TextBlock Text="{Binding SelectedApplicationCategory.SelectedAppModel.Name}" TextWrapping="Wrap" Margin="5,0"/>
+                    <TextBlock Text="{Binding SelectedCategory.SelectedAppModel.Name}" TextWrapping="Wrap" Margin="5,0"/>
                 </DockPanel>
 
                 <DockPanel DockPanel.Dock="Top" Margin="2">
@@ -240,7 +240,7 @@
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Path}" Value="">
+                                <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel.Path}" Value="">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -248,7 +248,7 @@
                     </DockPanel.Style>
                     
                     <TextBlock Text="Emplacement :" FontWeight="Medium" TextDecorations="Underline"/>
-                    <TextBox Text="{Binding SelectedApplicationCategory.SelectedAppModel.FolderPath, Mode=OneWay}" TextWrapping="Wrap" Margin="5,0" IsReadOnly="True"/>
+                    <TextBox Text="{Binding SelectedCategory.SelectedAppModel.FolderPath, Mode=OneWay}" TextWrapping="Wrap" Margin="5,0" IsReadOnly="True"/>
                 </DockPanel>
 
                 <DockPanel DockPanel.Dock="Top" Margin="2">
@@ -256,7 +256,7 @@
                         <Style TargetType="DockPanel">
                             <Setter Property="Visibility" Value="Visible"/>
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding SelectedApplicationCategory.SelectedAppModel.Description}" Value="">
+                                <DataTrigger Binding="{Binding SelectedCategory.SelectedAppModel.Description}" Value="">
                                     <Setter Property="Visibility" Value="Collapsed"/>
                                 </DataTrigger>
                             </Style.Triggers>
@@ -264,7 +264,7 @@
                     </DockPanel.Style>
                     
                     <TextBlock DockPanel.Dock="Top" Text="Description :" FontWeight="Medium" TextDecorations="Underline"/>
-                    <TextBlock Text="{Binding SelectedApplicationCategory.SelectedAppModel.Description}" TextWrapping="Wrap" Margin="5,0"/>
+                    <TextBlock Text="{Binding SelectedCategory.SelectedAppModel.Description}" TextWrapping="Wrap" Margin="5,0"/>
                 </DockPanel>
 
 

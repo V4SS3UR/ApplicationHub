@@ -1,24 +1,20 @@
-﻿using ApplicationHub.Properties;
+﻿using System.Windows;
 using System;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using System.Windows.Input;
 
-namespace ApplicationHub
+namespace ApplicationHub.MVVM.View
 {
     /// <summary>
-    /// Logique d'interaction pour TileControl.xaml
+    /// Logique d'interaction pour MinimalTileControl.xaml
     /// </summary>
-    public partial class TileControl : UserControl
+    public partial class AddTileControl : UserControl
     {
-        private const double ScaleFactor = 1.15;
+        private const double ScaleFactor = 1.05;
 
-        public TileControl()
+        public AddTileControl()
         {
             InitializeComponent();
         }
