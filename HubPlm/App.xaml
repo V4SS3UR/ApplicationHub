@@ -10,6 +10,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Ressources/Geometry.xaml"/>
                 <ResourceDictionary Source="Ressources/DefaultStyles.xaml"/>
+                <ResourceDictionary Source="Ressources/ScrollBar.xaml"/>
+                <ResourceDictionary Source="Ressources/Expander.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <SolidColorBrush x:Key="mainBackgroundColor" Color="#07779C" />

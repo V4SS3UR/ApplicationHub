@@ -138,19 +138,22 @@
                     
                 </Border>
 
-                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"  Margin="5">
+                <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"  Margin="5,0,5,5">
 
-                    <StackPanel>
+                    <StackPanel>                        
 
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                            <TextBlock Text="Mes applications" FontSize="20" FontWeight="Bold" Foreground="White"
+                        <Expander IsExpanded="True">
+                            <Expander.Header>
+                                <StackPanel Margin="5,0,0,0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <TextBlock Text="Mes applications" FontSize="20" FontWeight="Bold" Foreground="White"
                                                VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding CustomApplicationListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
+                                    <TextBlock Text="{Binding CustomApplicationListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
                                                VerticalAlignment="Center"/>
-                        </StackPanel>
+                                </StackPanel>
+                            </Expander.Header>
 
-                        <!--OwnApp-->
-                        <ItemsControl ItemTemplate="{StaticResource CustomAppTile}"
+                            <!--OwnApp-->
+                            <ItemsControl ItemTemplate="{StaticResource CustomAppTile}"
                                       gong:DragDrop.IsDragSource="True"
                                       gong:DragDrop.IsDropTarget="True"
                                       gong:DragDrop.DropHandler="{Binding}"        
@@ -159,60 +162,68 @@
                                       gong:DragDrop.UseDefaultDragAdorner="True"
                                       gong:DragDrop.DropTargetAdornerBrush="#3000"
                                       gong:DragDrop.DragAdornerTemplate="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ItemTemplate}">
-                            <ItemsControl.Resources>
-                                <core:BindingProxy x:Key="proxy" MyData="{Binding Path=CustomApplicationListView}"/>
-                            </ItemsControl.Resources>
-                            
-                            <ItemsControl.ItemsSource>
-                                <CompositeCollection>
-                                    <CollectionContainer Collection="{Binding Source={StaticResource proxy}, Path=MyData}"/>
+                                <ItemsControl.Resources>
+                                    <core:BindingProxy x:Key="proxy" MyData="{Binding Path=CustomApplicationListView}"/>
+                                </ItemsControl.Resources>
 
-                                    <local:AddTileControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"
+                                <ItemsControl.ItemsSource>
+                                    <CompositeCollection>
+                                        <CollectionContainer Collection="{Binding Source={StaticResource proxy}, Path=MyData}"/>
+
+                                        <local:AddTileControl HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3"
                                         ToolTipService.InitialShowDelay="1000"                                                              
                                         ToolTipService.BetweenShowDelay="1000" 
-                                        ToolTip="{Binding Description}"/>                                
-                                </CompositeCollection>
-                            </ItemsControl.ItemsSource>
+                                        ToolTip="{Binding Description}"/>
+                                    </CompositeCollection>
+                                </ItemsControl.ItemsSource>
 
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </Expander>
+                        
+                        
 
                         <!--Category--> 
                         <ItemsControl Grid.Row="1" ItemsSource="{Binding CategoryListView}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
 
-                                    <StackPanel>
-                                        <StackPanel.Style>
-                                            <Style TargetType="StackPanel">
+                                    <Border>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding AppModelListView.IsEmpty}" Value="true">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </StackPanel.Style>
+                                        </Border.Style>
 
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                            <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
-                                               VerticalAlignment="Center" />
-                                            <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
-                                               VerticalAlignment="Center"/>
-                                        </StackPanel>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0">
+                                                    <TextBlock Text="{Binding Name}" FontSize="20" FontWeight="Bold" Foreground="White"
+                                                               VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Foreground="#5FFF" FontSize="15" FontWeight="Medium" Margin="5,0"
+                                                               VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Expander.Header>
 
-                                        <ItemsControl ItemsSource="{Binding AppModelListView}"
+                                            <ItemsControl ItemsSource="{Binding AppModelListView}"
                                                       ItemTemplate="{StaticResource Tile}">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                        </ItemsControl>
-                                    </StackPanel>
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                            </ItemsControl>
+                                        </Expander>  
+                                        
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
