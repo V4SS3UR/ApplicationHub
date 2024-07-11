@@ -81,8 +81,6 @@ namespace ApplicationHub.MVVM.Model
                 this.Icon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
                 this.Icon.Freeze();
                 icon.Dispose();
-
-                GetMetaData();
             }
 
 

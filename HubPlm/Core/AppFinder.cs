@@ -100,6 +100,7 @@ namespace ApplicationHub.Properties
         private void NotifyAppModel(string path, string category)
         {
             var appModel = new AppModel(path, category);
+            appModel.GetMetaData();
             OnApplicationFinded?.Invoke(appModel);
         }
 
