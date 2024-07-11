@@ -2,6 +2,7 @@
 using ApplicationHub.Easter.View;
 using ApplicationHub.MVVM.Model;
 using ApplicationHub.Properties;
+using GongSolutions.Wpf.DragDrop;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -10,13 +11,14 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
 
 namespace ApplicationHub.MVVM.ViewModel
 {
-    public class MainInterface_ViewModel : ObservableObject
+    public class MainInterface_ViewModel : ObservableObject, GongSolutions.Wpf.DragDrop.IDropTarget
     {
         public List<AppModel> originalApplicationList { get; set; }
         public ObservableCollection<AppModel> LastUsedApplicationList { get; set; }
@@ -93,7 +95,7 @@ namespace ApplicationHub.MVVM.ViewModel
             appFinder.OnCategoryFinded += AppFinder_OnCategoryFinded;
 
             //Popuplate the originalApplicationList
-            Task.Run( () =>
+            Task.Run(() =>
             {
                 appFinder.Find();
             })
@@ -208,22 +210,25 @@ namespace ApplicationHub.MVVM.ViewModel
             {
                 App.Current.Dispatcher.Invoke(() =>
                 {
-                    //Insert the appModel following it's index in the pinnedApplicationList and the pinnedApplicationList
-                    if(PinnedApplicationList.Any(o => o.Name == appModel.Name))
+                    //Insert the appModel following it's index in the settingsPinnedApplicationList
+                    var settingsIndex = settingsPinnedApplicationList.IndexOf(appModel.Name);
+                    var insertIndex = 0;
+
+                    foreach(var pinnedApp in this.PinnedApplicationList.ToArray())
                     {
-                        foreach (var pinnedApp in this.PinnedApplicationList)
+                        var pinnedAppSettingsIndex = settingsPinnedApplicationList.IndexOf(pinnedApp.Name);
+
+                        if (settingsIndex > pinnedAppSettingsIndex)
                         {
-                            if (settingsPinnedApplicationList.IndexOf(pinnedApp.Name) > settingsPinnedApplicationList.IndexOf(appModel.Name))
-                            {
-                                this.PinnedApplicationList.Insert(this.PinnedApplicationList.IndexOf(pinnedApp), appModel);
-                                break;
-                            }
+                            insertIndex++;
+                        }
+                        else
+                        {
+                            break;
                         }
                     }
-                    else
-                    {
-                        this.PinnedApplicationList.Add(appModel);
-                    }
+
+                    this.PinnedApplicationList.Insert(insertIndex, appModel);                    
 
                     appModel.IsPinned = true;
                 });
@@ -390,6 +395,76 @@ namespace ApplicationHub.MVVM.ViewModel
                 flappy.Flappy.CloseGameAction = new Action(() => MainWindow_ViewModel.Instance.EasterView = null);
                 MainWindow_ViewModel.Instance.EasterView = flappy;
                 this.SearchString = string.Empty;
+            }
+        }
+
+
+
+
+        public void DragEnter(IDropInfo dropInfo)
+        {
+            GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragEnter(dropInfo);
+        }
+        public void DragOver(IDropInfo dropInfo)
+        {
+            GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo);
+        }
+        public void DragLeave(IDropInfo dropInfo)
+        {
+            GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragLeave(dropInfo);
+        }
+        public void Drop(IDropInfo dropInfo)
+        {            
+            if (dropInfo.DragInfo.SourceCollection == this.PinnedApplicationListView)
+            {
+                GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.Drop(dropInfo);
+
+                var pinnedApplicationList = new StringCollection();
+                var names = this.PinnedApplicationList.Select(o => o.Name);
+                pinnedApplicationList.AddRange(names.ToArray());
+
+                Settings.Default.PinnedApplicationList = pinnedApplicationList;
+                Settings.Default.Save();
+            }
+
+            if (dropInfo.DragInfo.SourceCollection is CompositeCollection)
+            {
+                var compositeCollection = dropInfo.DragInfo.SourceCollection as CompositeCollection;
+                var collectionContainer = compositeCollection.OfType<CollectionContainer>().First();
+                var sourceCollection = collectionContainer.Collection as ListCollectionView;
+
+                if (sourceCollection == this.CustomApplicationListView)
+                {
+                    //Save the new order of the custom applications
+                    var personnalApplicationPathList = new StringCollection();
+                    var paths = this.CustomApplicationList.Select(o => o.Path);
+                    personnalApplicationPathList.AddRange(paths.ToArray());
+
+                    Settings.Default.PersonnalApplicationPathList = personnalApplicationPathList;
+                    Settings.Default.Save();
+
+                    //Reorder the custom applications
+                    var currentApp = dropInfo.Data as AppModel;
+                    var baseIndex = this.CustomApplicationList.IndexOf(currentApp);
+                    var insertIndex = dropInfo.InsertIndex;
+
+                    //Correction due to the drop being possible on the left and right of each index.
+                    //If the drop is on the direct left or the direct right of the baseIndex, it remain the same index.
+                    //this constrain is bring by the compositeCollection.
+                    if (baseIndex == insertIndex - 1)
+                    {
+                        insertIndex = baseIndex;
+                    }
+                    else if (baseIndex < insertIndex - 1)
+                    {
+                        insertIndex = insertIndex - 1;
+                    }
+
+                    insertIndex = Math.Max(0, insertIndex);
+                    insertIndex = Math.Min(insertIndex, (this.CustomApplicationList.Count - 1));
+
+                    this.CustomApplicationList.Move(baseIndex, insertIndex);
+                }
             }
         }
     }

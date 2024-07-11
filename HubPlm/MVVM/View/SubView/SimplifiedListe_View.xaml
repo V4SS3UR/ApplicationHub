@@ -9,6 +9,7 @@
              xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
              xmlns:core="clr-namespace:ApplicationHub.Core"
              xmlns:converters="clr-namespace:ApplicationHub.Core.Converters"
+             xmlns:gong="urn:gong-wpf-dragdrop"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="590">
 
@@ -88,7 +89,16 @@
                         </Path>
                         <TextBlock Text=":" FontSize="18" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="3,0"/>
 
-                        <ItemsControl ItemsSource="{Binding PinnedApplicationListView}" ItemTemplate="{StaticResource MinimalTile}">
+                        <ItemsControl ItemsSource="{Binding PinnedApplicationListView}" ItemTemplate="{StaticResource MinimalTile}"
+                            gong:DragDrop.IsDragSource="True"
+                            gong:DragDrop.IsDropTarget="True"
+                            gong:DragDrop.DropHandler="{Binding}"        
+                            gong:DragDrop.DragDropContext="PinnedApplication"     
+                            gong:DragDrop.DragMouseAnchorPoint="0.5,0.5"
+                            gong:DragDrop.UseDefaultDragAdorner="True"
+                            gong:DragDrop.DropTargetAdornerBrush="#3000"
+                            gong:DragDrop.DragAdornerTemplate="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ItemTemplate}">
+                            
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
@@ -140,7 +150,15 @@
                         </StackPanel>
 
                         <!--OwnApp-->
-                        <ItemsControl ItemTemplate="{StaticResource CustomAppTile}">
+                        <ItemsControl ItemTemplate="{StaticResource CustomAppTile}"
+                                      gong:DragDrop.IsDragSource="True"
+                                      gong:DragDrop.IsDropTarget="True"
+                                      gong:DragDrop.DropHandler="{Binding}"        
+                                      gong:DragDrop.DragDropContext="CustomApplication"     
+                                      gong:DragDrop.DragMouseAnchorPoint="0.5,0.5"
+                                      gong:DragDrop.UseDefaultDragAdorner="True"
+                                      gong:DragDrop.DropTargetAdornerBrush="#3000"
+                                      gong:DragDrop.DragAdornerTemplate="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ItemTemplate}">
                             <ItemsControl.Resources>
                                 <core:BindingProxy x:Key="proxy" MyData="{Binding Path=CustomApplicationListView}"/>
                             </ItemsControl.Resources>
