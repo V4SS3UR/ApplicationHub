@@ -53,10 +53,16 @@ namespace ApplicationHub.MVVM.ViewModel
         {
             Instance = this;
 
-            string assemblyNameVersionMinor = Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
             string assemblyNameVersionMajor = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString();
+            string assemblyNameVersionMinor = Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
+            string assemblyNameVersionBuild = Assembly.GetExecutingAssembly().GetName().Version.Build.ToString();
             Title = "Application Hub";
             TitleVersion = $"v{assemblyNameVersionMajor}.{assemblyNameVersionMinor}";
+
+            if (assemblyNameVersionBuild != "0")
+            {
+                TitleVersion += $".{assemblyNameVersionBuild}";
+            }
 
             SimplifiedVersion = Settings.Default.SimplifiedVersion;
         }
