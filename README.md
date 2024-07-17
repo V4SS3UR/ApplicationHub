@@ -2,6 +2,10 @@
 
 ApplicationHub is a powerful application launcher and organizer built in WPF using C#. It empowers users to efficiently manage and access their applications through a variety of intuitive features and customizable options.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c938b7cb-9e1e-46c9-9a3a-c9599622c453">
+</p>
+
 ## Features
 
 ### Interface Modes
@@ -10,15 +14,27 @@ ApplicationHub is a powerful application launcher and organizer built in WPF usi
   - **Simplified View**: Displays applications as tiles in a wrap panel layout for easy access.
   - **Detailed View**: Organizes applications categorically with category panels and detailed application lists.
   - **Widget Mode**: Enables a floating widget that can be docked on screen corners or preferred locations.
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/de14ff49-573f-4dbc-bc8c-2a76b6ea64c0" Height="400px" alt>
+  <img src="https://github.com/user-attachments/assets/87880514-b603-4fd8-8f0b-a9ce291585bd" Height="400px" alt>
+</p>
 ### Widget Control
 
-- **Docking and Floating Icon**: Place a floating icon on screen corners or any location. The icon magnetizes to screen boundaries or corners for user convenience.
+- **Toggle**: Toggle the widget by clicking on the app icon or minimizing it.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/68405439-f736-4810-a5c5-5326dd4f3f0e" Height="400px" alt>
+</p>
 - **Overlay Display**: On hover, displays pinned applications and recent apps for quick access.
-
-![Screenshot 1](link.png)
-*Caption for Screenshot 1.*
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/175a72bb-c3f2-4ae4-87a3-fe747d478c15" Height="100px" alt>
+  <img src="https://github.com/user-attachments/assets/ef5fc253-2d56-485a-a51d-b8cc9bbe4536" Height="100px" alt>
+</p>
+- **Docking and Floating Icon**: Place a floating icon on screen corners or any location. The icon magnetizes to screen boundaries or corners for user convenience.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/092a0097-4377-465d-a1fc-7ebda16aa4f1" width="150px" alt>
+  <img src="https://github.com/user-attachments/assets/b6cb5888-9138-45c9-ada4-92f1a791cce3" width="150px" alt>
+  <img src="https://github.com/user-attachments/assets/f395914f-d0ab-4d95-b5e9-f0d974b94450" width="150px" alt>
+</p>
 ### Application Management
 
 - **Predefined Application List**: Easily configure applications via the `ApplicationList.txt` file.
@@ -30,11 +46,11 @@ ApplicationHub is a powerful application launcher and organizer built in WPF usi
 Example:
 
 ```plaintext
-[CategoryName]
+[Category1 Name]
 C:\Path\To\Application.exe
-D:\Path\To\FolderWithApps\
+C:\Path\To\FolderWithApps\
 
-[CategoryName2]
+[Category2 Name]
 ...
 ```
 
@@ -54,6 +70,14 @@ metadata/
     └── description.txt
 ```
 
+## Getting Started
+
+To begin using ApplicationHub, simply download the latest release and follow the installation instructions in the documentation.
+
 ## Contributing
 
-Contributions are welcome!
+We value contributions from the community. If you have suggestions, find a bug, or want to add a new feature, please open an issue or submit a pull request.
+
+---
+
+**Note:** Screenshots are for illustration purposes only and may not reflect the latest version of the application.
