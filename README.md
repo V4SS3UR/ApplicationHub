@@ -15,25 +15,25 @@ ApplicationHub is a powerful application launcher and organizer built in WPF usi
   - **Detailed View**: Organizes applications categorically with category panels and detailed application lists.
   - **Widget Mode**: Enables a floating widget that can be docked on screen corners or preferred locations.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/de14ff49-573f-4dbc-bc8c-2a76b6ea64c0" Height="400px" alt>
-  <img src="https://github.com/user-attachments/assets/87880514-b603-4fd8-8f0b-a9ce291585bd" Height="400px" alt>
+  <img src="https://github.com/user-attachments/assets/de14ff49-573f-4dbc-bc8c-2a76b6ea64c0" Height="400px" width="466px">
+  <img src="https://github.com/user-attachments/assets/87880514-b603-4fd8-8f0b-a9ce291585bd" Height="400px" width="466px">
 </p>
 ### Widget Control
 
 - **Toggle**: Toggle the widget by clicking on the app icon or minimizing it.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/68405439-f736-4810-a5c5-5326dd4f3f0e" Height="400px" alt>
+  <img src="https://github.com/user-attachments/assets/68405439-f736-4810-a5c5-5326dd4f3f0e" Height="400px" width="443px">
 </p>
 - **Overlay Display**: On hover, displays pinned applications and recent apps for quick access.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/175a72bb-c3f2-4ae4-87a3-fe747d478c15" Height="100px" alt>
-  <img src="https://github.com/user-attachments/assets/ef5fc253-2d56-485a-a51d-b8cc9bbe4536" Height="100px" alt>
+  <img src="https://github.com/user-attachments/assets/175a72bb-c3f2-4ae4-87a3-fe747d478c15" Height="100px" width="412">
+  <img src="https://github.com/user-attachments/assets/ef5fc253-2d56-485a-a51d-b8cc9bbe4536" Height="100px" width="412">
 </p>
 - **Docking and Floating Icon**: Place a floating icon on screen corners or any location. The icon magnetizes to screen boundaries or corners for user convenience.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/092a0097-4377-465d-a1fc-7ebda16aa4f1" width="150px" alt>
-  <img src="https://github.com/user-attachments/assets/b6cb5888-9138-45c9-ada4-92f1a791cce3" width="150px" alt>
-  <img src="https://github.com/user-attachments/assets/f395914f-d0ab-4d95-b5e9-f0d974b94450" width="150px" alt>
+  <img src="https://github.com/user-attachments/assets/092a0097-4377-465d-a1fc-7ebda16aa4f1" Height="150px" width="150px">
+  <img src="https://github.com/user-attachments/assets/b6cb5888-9138-45c9-ada4-92f1a791cce3" Height="150px"  width="150px">
+  <img src="https://github.com/user-attachments/assets/f395914f-d0ab-4d95-b5e9-f0d974b94450" Height="150px"  width="150px">
 </p>
 ### Application Management
 
