@@ -3,6 +3,7 @@ using ApplicationHub.MVVM.ViewModel;
 using ApplicationHub.Properties;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -47,6 +48,8 @@ namespace ApplicationHub
         private Window minimalWindow;
         private DispatcherTimer mouseCheckTimer;
 
+        private Rectangle workingAreaBounds;
+
         public MainWindow_View()
         {
             Instance = this;
@@ -64,9 +67,26 @@ namespace ApplicationHub
 
         private void MainWindow_View_Loaded(object sender, RoutedEventArgs e)
         {
+            workingAreaBounds = new Rectangle(int.MaxValue, int.MaxValue, int.MinValue, int.MinValue);
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                workingAreaBounds = Rectangle.Union(workingAreaBounds, screen.Bounds);
+            }
+
             if (floatingState)
             {
+                currentScreen = Screen.PrimaryScreen;
+
                 SetFloatingState();
+
+                //Snap the window to the screen center if it goes out of bounds
+                if (this.Left < workingAreaBounds.Left || this.Top < workingAreaBounds.Top || this.Left + this.Width > workingAreaBounds.Right || this.Top + this.Height > workingAreaBounds.Bottom)
+                {
+                    var middleX = Screen.PrimaryScreen.WorkingArea.Width / 2;
+                    var middleY = Screen.PrimaryScreen.WorkingArea.Height / 2;
+
+                    AnimatePosition(middleX, middleY, TimeSpan.FromSeconds(1), TimeSpan.Zero);
+                }
             }
         }
 
@@ -181,7 +201,7 @@ namespace ApplicationHub
             this.FloatingBorder.VerticalAlignment = System.Windows.VerticalAlignment.Center;
             this.FloatingBorder.Effect = new DropShadowEffect()
             {
-                Color = (Color)ColorConverter.ConvertFromString("#8000"),
+                Color = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#8000"),
                 Direction = 0,
                 ShadowDepth = 0,
                 Opacity = 0.5,
@@ -360,7 +380,6 @@ namespace ApplicationHub
             this.BeginAnimation(Window.TopProperty, topAnimation);
         }
 
-
         private void FloatingLogoImage_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //Spin the floatting logo very fast
@@ -488,7 +507,7 @@ namespace ApplicationHub
             if (presentationSource != null)
             {
                 var transform = presentationSource.CompositionTarget.TransformFromDevice;
-                var mousePoint = transform.Transform(new Point(mousePosition.X, mousePosition.Y));
+                var mousePoint = transform.Transform(new System.Windows.Point(mousePosition.X, mousePosition.Y));
 
                 // Check if mouse is within marginpx of the floating window or the minimal window
                 bool isMouseOverFloatingOrMinimal =
@@ -502,7 +521,7 @@ namespace ApplicationHub
             }
         }
 
-        private bool IsPointInBounds(Point point, Rect bounds)
+        private bool IsPointInBounds(System.Windows.Point point, Rect bounds)
         {
             return bounds.Contains(point);
         }
