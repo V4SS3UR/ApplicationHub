@@ -29,12 +29,41 @@
         </Style>
 
         <DataTemplate x:Key="Tile">
-            <fade:FadeButton Background="#FF5BA4BD" CornerRadius="5" Command="{Binding ClickCommand}"
+            <Grid RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Grid.RenderTransform>
+                
+                <fade:FadeButton Background="#FF5BA4BD" CornerRadius="5" Command="{Binding ClickCommand}"
                                 Width="50" Height="50" Margin="0,0,4,0">
-                <Image Source="{Binding Icon, Mode=OneWay}" Height="30" 
+                    <Image Source="{Binding Icon, Mode=OneWay}" Height="30" 
                     RenderOptions.BitmapScalingMode="HighQuality" 
                     Margin="3" />
-            </fade:FadeButton>
+                </fade:FadeButton>
+
+                <Grid.Triggers>
+                    <EventTrigger RoutedEvent="MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                 To="1.08" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                 To="1.08" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                 To="1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                                <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                 To="1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Grid.Triggers>
+            </Grid>
         </DataTemplate>
     </UserControl.Resources>
     
@@ -60,11 +89,10 @@
                                     </Style.Triggers>
                                 </Style>
                             </ItemsControl.Style>
-
-
+                            
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
+                                    <StackPanel Orientation="Horizontal" Margin="5,0"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
@@ -85,7 +113,7 @@
                         <ItemsControl ItemsSource="{Binding LastUsedApplicationListView}" ItemTemplate="{StaticResource Tile}" Margin="0,3">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
+                                    <StackPanel Orientation="Horizontal" Margin="5,0"/>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>                        
