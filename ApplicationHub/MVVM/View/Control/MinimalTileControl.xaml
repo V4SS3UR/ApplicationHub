@@ -16,15 +16,47 @@
         <m:AppModel/>
     </d:UserControl.DataContext>
 
+    <UserControl.Resources>
+        <CubicEase EasingMode="EaseOut" x:Key="CubicEaseOut"/>
+        <CubicEase EasingMode="EaseInOut" x:Key="CubicEaseInOut"/>
+    </UserControl.Resources>
+
     <Grid ToolTipService.InitialShowDelay="1000"                                                              
           ToolTipService.BetweenShowDelay="1000"
-          ToolTip="{Binding Description}">
+          ToolTip="{Binding Description}"
+          RenderTransformOrigin="0.5,0.5">
+
+        <Grid.RenderTransform>
+            <ScaleTransform ScaleX="1" ScaleY="1"/>
+        </Grid.RenderTransform>
         
         <fade:FadeButton Background="#FF5BA4BD" CornerRadius="5" Command="{Binding ClickCommand}"
                                 Width="35" Height="35" Margin="3">
             <Image Source="{Binding Icon, Mode=OneWay}" Height="25" 
-                    RenderOptions.BitmapScalingMode="HighQuality" 
-                    Margin="3" />
+                   RenderOptions.BitmapScalingMode="HighQuality" Margin="3"/>  
         </fade:FadeButton>
+
+        <Grid.Triggers>
+            <EventTrigger RoutedEvent="MouseEnter">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                         To="1.1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                         To="1.1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+            <EventTrigger RoutedEvent="MouseLeave">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                         To="1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                         To="1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseOut}"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Grid.Triggers>
     </Grid>
 </UserControl>
