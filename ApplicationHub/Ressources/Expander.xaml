@@ -5,6 +5,9 @@
     <Geometry x:Key="Minus">M240-120v-80h480v80H240Z</Geometry>
     <Geometry x:Key="Plus">M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z</Geometry>
 
+    <CubicEase EasingMode="EaseOut" x:Key="CubicEaseOut"/>
+    <CubicEase EasingMode="EaseInOut" x:Key="CubicEaseInOut"/>
+
     <Style TargetType="{x:Type Expander}">
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -36,11 +39,7 @@
                                                                         <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="{StaticResource Minus}"/>
                                                                     </ObjectAnimationUsingKeyFrames>
                                                                     <DoubleAnimation Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                                                                     To="180" Duration="0:0:0.5">
-                                                                        <DoubleAnimation.EasingFunction>
-                                                                            <CubicEase EasingMode="EaseInOut"/>
-                                                                        </DoubleAnimation.EasingFunction>
-                                                                    </DoubleAnimation>
+                                                                                     To="180" Duration="0:0:0.5" EasingFunction="{StaticResource CubicEaseInOut}"/>
                                                                 </Storyboard>
                                                             </BeginStoryboard>
                                                         </DataTrigger.EnterActions>
@@ -51,11 +50,7 @@
                                                                         <DiscreteObjectKeyFrame KeyTime="0:0:0.25" Value="{StaticResource Plus}"/>
                                                                     </ObjectAnimationUsingKeyFrames>
                                                                     <DoubleAnimation Storyboard.TargetProperty="(Path.RenderTransform).(RotateTransform.Angle)"
-                                                                                     To="0" Duration="0:0:0.5">
-                                                                        <DoubleAnimation.EasingFunction>
-                                                                            <CubicEase EasingMode="EaseInOut"/>
-                                                                        </DoubleAnimation.EasingFunction>
-                                                                    </DoubleAnimation>
+                                                                                     To="0" Duration="0:0:0.5" EasingFunction="{StaticResource CubicEaseInOut}"/>
                                                                 </Storyboard>
                                                             </BeginStoryboard>
                                                         </DataTrigger.ExitActions>
@@ -70,12 +65,33 @@
                                 </Border>
                             </DockPanel>
 
-                            <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Visibility="Collapsed"/>
+                            <ContentPresenter x:Name="ExpandSite" DockPanel.Dock="Bottom" Focusable="false" Margin="{TemplateBinding Padding}" RenderTransformOrigin="0.5,0.5"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ContentPresenter.LayoutTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                </ContentPresenter.LayoutTransform>
+                            </ContentPresenter>
+
                         </DockPanel>
                     </Border>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsExpanded" Value="true">
-                            <Setter Property="Visibility" TargetName="ExpandSite" Value="Visible"/>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="LayoutTransform.(ScaleTransform.ScaleY)" 
+                                                        To="1" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseInOut}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="ExpandSite" Storyboard.TargetProperty="LayoutTransform.(ScaleTransform.ScaleY)" 
+                                                        To="0" Duration="0:0:0.2" EasingFunction="{StaticResource CubicEaseInOut}"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
