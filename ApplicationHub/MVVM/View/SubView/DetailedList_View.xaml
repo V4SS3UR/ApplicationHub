@@ -25,6 +25,8 @@
             <Setter Property="FontSize" Value="13" />
             <Setter Property="Height" Value="50" />
         </Style>
+
+        <CubicEase EasingMode="EaseOut" x:Key="Easing"/>
     </UserControl.Resources>
     
     <Grid Background="#06455B">
@@ -56,10 +58,38 @@
                     <DataTemplate>
                         <fade:FadeRadioButton Cursor="Hand" HorizontalContentAlignment="Left" GroupName="CategoryName"
                                               IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem, Mode=FindAncestor}, Path=IsSelected}">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel x:Name="CategoryStackPanel" Orientation="Horizontal" RenderTransformOrigin="0,0.5">
+                                <StackPanel.RenderTransform>
+                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                </StackPanel.RenderTransform>
+                                
                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" FontWeight="Medium" Margin="5,0"/>
-                                <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Opacity="0.5" VerticalAlignment="Center" FontWeight="Medium" Margin="5,0"/>
+                                <TextBlock Text="{Binding AppModelListView.Count, StringFormat={}({0})}" Opacity="0.5" VerticalAlignment="Center" FontWeight="Medium" Margin="5,0,15,0"/>
                             </StackPanel>
+
+                            <fade:FadeRadioButton.Triggers>
+                                <EventTrigger RoutedEvent="MouseEnter">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="CategoryStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                                             To="1.05" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                            <DoubleAnimation Storyboard.TargetName="CategoryStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                                             To="1.05" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                                <EventTrigger RoutedEvent="MouseLeave">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="CategoryStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                                             To="1" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                            <DoubleAnimation Storyboard.TargetName="CategoryStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                                             To="1" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </fade:FadeRadioButton.Triggers>
+
                         </fade:FadeRadioButton>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -75,32 +105,9 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <Border Background="White" Height="30" Margin="0" CornerRadius="0" 
-                        BorderThickness="0,0,0,2" BorderBrush="#3000">
-                    
-                    <Grid Margin="15,5,5,5">
-                        <TextBlock Height="auto" Text="Rechercher" Margin="1,0" FontSize="15" FontWeight="Thin" Foreground="Gray">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SearchString}" Value="">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBox x:Name="SearchTextBox" Height="auto" VerticalContentAlignment="Center"
-                                 Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
-                                 Background="Transparent" BorderThickness="0"/>
-
-                        <fade:FadeButton Background="LightGray" Height="18" Width="18" CornerRadius="9" HorizontalAlignment="Right"
-                                         Command="{Binding ClearSearchCommand}">
-                            <Path Data="{StaticResource CrossCircle}" Fill="#8FFF" Stretch="Uniform" Margin="1"/>
-                        </fade:FadeButton>
-                    </Grid>
-                </Border>
+                <fade:FadeTextBox Grid.Row="0" Background="White" Height="30" BorderBrush="#3000" BorderThickness="0,0,0,2"
+                  HorizontalAlignment="Stretch" Width="auto" FontSize="15" Foreground="Black" FontWeight="Thin"
+                  HintText="Rechercher" Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>                
 
                 <ListBox Grid.Row="1" Background="Transparent" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto"
                          ItemsSource="{Binding SelectedCategory.AppModelListView}" 
@@ -123,14 +130,39 @@
                             <fade:FadeRadioButton Cursor="Hand" HorizontalContentAlignment="Left" GroupName="AppName"
                                                   IsChecked="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem, Mode=FindAncestor}, Path=IsSelected}">
 
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="{Binding Icon, Mode=OneWay}" Height="32" RenderOptions.BitmapScalingMode="HighQuality" Margin="5" />
+                                <StackPanel x:Name="AppStackPanel" Orientation="Horizontal"  RenderTransformOrigin="0,0.5">
+                                    <StackPanel.RenderTransform>
+                                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                    </StackPanel.RenderTransform>
 
-                                    <TextBlock Grid.Row="1" 
-                                                   Text="{Binding Name}" FontSize="10" FontWeight="Medium" Foreground="#FFFF"
-                                                   TextWrapping="Wrap" TextAlignment="Center" 
-                                                   VerticalAlignment="Center" />
+                                    <Image  Source="{Binding Icon, Mode=OneWay}" Height="28" RenderOptions.BitmapScalingMode="HighQuality" Margin="5"/>
+
+                                    <TextBlock Grid.Row="1" Text="{Binding Name}" FontSize="10" FontWeight="Medium" Foreground="#FFFF"
+                                               TextWrapping="Wrap" TextAlignment="Center" VerticalAlignment="Center" />
                                 </StackPanel>
+
+                                <fade:FadeRadioButton.Triggers>
+                                    <EventTrigger RoutedEvent="MouseEnter">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="AppStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                                                 To="1.2" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                                <DoubleAnimation Storyboard.TargetName="AppStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                                                 To="1.2" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                    <EventTrigger RoutedEvent="MouseLeave">
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="AppStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" 
+                                                                 To="1" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                                <DoubleAnimation Storyboard.TargetName="AppStackPanel" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" 
+                                                                 To="1" Duration="0:0:0.2" EasingFunction="{StaticResource Easing}"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </EventTrigger>
+                                </fade:FadeRadioButton.Triggers>
                             </fade:FadeRadioButton>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

@@ -109,34 +109,9 @@
                     </DockPanel>
                 </Border>
 
-                <Border Grid.Row="1" Background="White" Height="30" BorderBrush="Black" Margin="5" CornerRadius="5">
-
-                    <Grid Margin="15,5,5,5">
-                        <TextBlock Height="auto" Text="Rechercher" Margin="1,0"
-                                FontSize="15" FontWeight="Thin" Foreground="Gray">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed" />
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SearchString}" Value="">
-                                            <Setter Property="Visibility" Value="Visible" />
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <TextBox x:Name="UserNametextBox" Height="auto"
-                                VerticalContentAlignment="Center"
-                                Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" FontSize="15" Foreground="Black" FontWeight="Thin"
-                                Background="Transparent" BorderThickness="0" />
-
-                        <fade:FadeButton Background="LightGray" Height="20" Width="20" CornerRadius="10" HorizontalAlignment="Right"
-                                        Command="{Binding ClearSearchCommand}">
-                            <Path Data="{StaticResource CrossCircle}" Fill="#8FFF" Stretch="Uniform" Margin="1"/>
-                        </fade:FadeButton>
-                    </Grid>
-                    
-                </Border>
+                <fade:FadeTextBox Grid.Row="1" Background="White" Height="30" BorderBrush="Black" Margin="5" CornerRadius="5"
+                                  HorizontalAlignment="Stretch" Width="auto" FontSize="15" Foreground="Black" FontWeight="Thin"
+                                  HintText="Rechercher" Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
 
                 <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto"  Margin="5,0,5,5">
 
